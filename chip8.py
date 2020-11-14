@@ -8,7 +8,7 @@ class Chip8:
     def __init__(self):
         self.pc = 0x200     # Program counter, starts at 0x200
         self.opcode = 0     # Opcode, reset to 0
-        self.index = 0      # Index register, reset to 0
+        self.address = 0    # Address register, reset to 0
         self.sp = 0         # Stack Pointer, reset to 0
         self.memory = [0] * 4096
         """Memory Map: 0x000-0x1FF - Interpreter (actually contains font set)
@@ -41,15 +41,19 @@ class Chip8:
         game += 1
         self.pc = 0
 
-    def emulate_cycle(self):
-        # Fetch Opcode (next two bytes from memory)
-        opcode = self.memory[self.pc] << 8 | self.memory[self.pc + 1]
-        # Decode Opcode
-        opcode = hex(opcode)
-        # Execute Opcode
-        opcodes[opcode](self)
-        # Update Timers
-        self.pc += 2
+    def execute_instruction(instruction):
+        operation = decode(instruction)
+        operation(self, instruction)
+
+    # def emulate_cycle(self):
+    #     # Fetch Opcode (next two bytes from memory)
+    #     opcode = self.memory[self.pc] << 8 | self.memory[self.pc + 1]
+    #     # Decode Opcode
+    #     opcode = hex(opcode)
+    #     # Execute Opcode
+    #     opcodes[opcode](self)
+    #     # Update Timers
+    #     self.pc += 2
 
     def set_keys(self):
         self.key = 0
