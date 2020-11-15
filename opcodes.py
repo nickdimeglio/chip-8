@@ -180,7 +180,7 @@ def opFX65(chip, instruction):
 
 
 opcodes = {"0NNN": op0NNN, "00E0": op00E0, "00EE": op00EE, "1NNN": op1NNN, "2NNN": op2NNN,
-        "3XNNN": op3XNN, "4XNN": op4XNN, "5XYO": op5XY0, "6XNN": op6XNN, "7XNN": op7XNN,
+        "3XNN": op3XNN, "4XNN": op4XNN, "5XYO": op5XY0, "6XNN": op6XNN, "7XNN": op7XNN,
         "8XY0": op8XY0, "8XY1": op8XY1, "8XY2": op8XY2, "8XY3": op8XY3, "8XY4": op8XY4,
         "8XY5": op8XY5, "8XY6": op8XY6, "8XY7": op8XY7, "8XYE": op8XYE, "9XY0": op9XY0,
         "ANNN": opANNN, "BNNN": opBNNN, "CXNN": opCXNN, "DXYN": opDXYN, "EX9E": opEX9E,
