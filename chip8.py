@@ -37,7 +37,7 @@ class Chip8:
         self.key = [0] * 16
 
     def load_game(self, game):
-        game += 1 
+        game += 1
         self.pc = 0
 
     def execute_instruction(instruction):

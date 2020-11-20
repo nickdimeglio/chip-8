@@ -108,23 +108,41 @@ def op2NNN(chip8, instruction):
 
 
 def op3XNN(chip8, instruction):
-    return 0
+    """Skips the next instruction if VX == NN"""
+    VX = chip8.v_registers[(instruction & 0x0F00) >> 8]
+    NN = instruction & 0x00FF
+    if VX == NN:
+        chip8.pc += 2
 
 
 def op4XNN(chip8, instruction):
-    return 0
+    """Skips the next instruction if VX != NN"""
+    VX = chip8.v_registers[(instruction & 0x0F00) >> 8]
+    NN = instruction & 0x00FF
+    if VX != NN:
+        chip8.pc += 2
 
 
 def op5XY0(chip8, instruction):
-    return 0
+    """Skips the next instruction if VX == VY"""
+    VX = chip8.v_registers[(instruction & 0x0F00) >> 8]
+    VY = chip8.v_registers[(instruction & 0X00F0) >> 4]
+    if VX == VY:
+        chip8.pc +=2
 
 
 def op6XNN(chip8, instruction):
-    return 0
+    """Sets VX = NN"""
+    X = (instruction & 0x0F00) >> 8
+    NN = instruction & 0x00FF
+    chip8.v_registers[X] = NN
 
 
 def op7XNN(chip8, instruction):
-    return 0
+    """Adds NN to VX"""
+    X = (instruction & 0x0F00) >> 8
+    NN = instruction & 0x00FF
+    chip8.v_registers[X] += NN
 
 
 def op8XY0(chip8, instruction):

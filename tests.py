@@ -6,8 +6,8 @@ from opcodes import *
 class TestChip8(unittest.TestCase):
 
     def test_instantiation(self):
-        chippy = Chip8()
-        self.assertTrue(isinstance(chippy, Chip8))
+        chip = Chip8()
+        self.assertTrue(isinstance(chip, Chip8))
 
 
 class TestDecoding(unittest.TestCase):
@@ -154,58 +154,99 @@ class TestOpCodes(unittest.TestCase):
 
         def test_op00E0(self):
             """Clears the screen"""
-            False
+            True
 
 
         def test_op00EE(self):
             """Returns from a subroutine"""
-            chippy = Chip8()
+            chip = Chip8()
             # Program is currently at 0x600
-            chippy.pc = 0x600
+            chip.pc = 0x600
             # Call subroutine at 0x400
-            op2NNN(chippy, 0x2400)
+            op2NNN(chip, 0x2400)
             # Return to 0x600
-            op00EE(chippy, 0x00EE)
-            self.assertEqual(chippy.pc, 0x600)
+            op00EE(chip, 0x00EE)
+            self.assertEqual(chip.pc, 0x600)
 
 
         def test_op1NNN(self):
             """Jumps to address NNN"""
-            chippy = Chip8()
-            op1NNN(chippy, 0x1F90)
-            self.assertEqual(chippy.pc, 0xF90)
+            chip = Chip8()
+            op1NNN(chip, 0x1F90)
+            self.assertEqual(chip.pc, 0xF90)
 
 
         def test_op2NNN(self):
             """Calls subroutine at NNN"""
-            chippy = Chip8()
-            chippy.pc = 0x301
-            op2NNN(chippy, 0x2ABC)
-            self.assertEqual(chippy.pc, 0xABC)
+            chip = Chip8()
+            chip.pc = 0x301
+            op2NNN(chip, 0x2ABC)
+            self.assertEqual(chip.pc, 0xABC)
             # Move stack pointer down 1 before accessing stack value
-            chippy.sp -=1
-            self.assertEqual(chippy.stack[chippy.sp], 0x301)
+            chip.sp -=1
+            self.assertEqual(chip.stack[chip.sp], 0x301)
 
 
         def test_op3XNN(self):
-            True
+            """Skips the next instruction if VX equals NN. Usually the next instruction
+            is a jump to skip a code block"""
+            chip = Chip8()
+            chip.pc = 0x400
+            chip.v_registers[0xA] = 0xFF
+
+            # VX == NN, check for skip
+            op3XNN(chip, 0x3AFF)
+            self.assertEqual(chip.pc, 0x402)
+
+            # VX != NN, check for no skip
+            op3XNN(chip, 0X3ABC)
+            self.assertTrue(chip.pc, 0x402)
 
 
         def test_op4XNN(self):
-            True
+            """Skips the next instruction if VX doesn't equal NN. Usually the
+            next instruction is a jump to skip a code block"""
+            chip = Chip8()
+            chip.pc = 0x400
+            chip.v_registers[0x1] = 0xDD
+
+            # VX == NN, check for no skip
+            op4XNN(chip, 0x31DD)
+            self.assertEqual(chip.pc, 0x400)
+
+            # VX != NN, check for skip
+            op4XNN(chip, 0X31FF)
+            self.assertEqual(chip.pc, 0x402)
 
 
         def test_op5XY0(self):
-            True
+            """Skips the next instruction if VX == VY"""
+            chip = Chip8()
+            chip.v_registers[0x0] = 0x5
+            chip.v_registers[0x1] = 0x5
+            chip.v_registers[0x2] = 0xF
+
+            # VX == VF, check for skip
+            op5XY0(chip, 0x5010)
+            self.assertEqual(chip.pc, 0x202)
+
+            # VX != VF, check for no skip
+            op5XY0(chip, 0x5120)
+            self.assertEqual(chip.pc, 0x202)
 
 
         def test_op6XNN(self):
-            True
+            """Set VX = NN"""
+            chip = Chip8()
+            op6XNN(chip, 0x6B88)
+            self.assertEqual(chip.v_registers[0xB], 0x88)
 
 
         def test_op7XNN(self):
-            True
-
+            chip = Chip8()
+            chip.v_registers[0xF] = 0xA
+            op7XNN(chip, 0x7F01)
+            self.assertEqual(chip.v_registers[0xF], 0xB)
 
         def test_op8XY0(self):
             True
