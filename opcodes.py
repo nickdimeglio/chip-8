@@ -82,184 +82,146 @@ def decode(instruction):
             return opFX1E
 
 
-
-
-
-
-
-
-
-def op0NNN(chip8, instruction):
-    chip8.address = chip8.opcode & 0x0FFF
-
-
 def op00E0(chip8, instruction):
     return 0
 
 
 def op00EE(chip8, instruction):
+    """Returns from a subroutine"""
+    # Move stack pointer down 1 before accessing a stack value
+    chip8.sp -= 1
+    chip8.pc = chip8.stack[chip8.sp]
+    chip8.stack[chip8.sp] = 0
+
+
+def op1NNN(chip8, instruction):
+    """Jump to address NNN"""
+    # May need to change this to jump to NNN - 0x2 bc pc += 2 after
+    chip8.pc = instruction & 0x0FFF
+
+
+def op2NNN(chip8, instruction):
+    """Calls subroutine at NNN"""
+    chip8.stack[chip8.sp] = chip8.pc
+    chip8.sp += 1
+    chip8.pc = instruction & 0x0FFF
+
+
+def op3XNN(chip8, instruction):
     return 0
 
 
-def op1NNN(chip, instruction):
+def op4XNN(chip8, instruction):
     return 0
 
 
-def op2NNN(chip, instruction):
+def op5XY0(chip8, instruction):
     return 0
 
 
-def op3XNN(chip, instruction):
+def op6XNN(chip8, instruction):
     return 0
 
 
-def op4XNN(chip, instruction):
+def op7XNN(chip8, instruction):
     return 0
 
 
-def op5XY0(chip, instruction):
+def op8XY0(chip8, instruction):
     return 0
 
 
-def op6XNN(chip, instruction):
+def op8XY1(chip8, instruction):
     return 0
 
 
-def op7XNN(chip, instruction):
+def op8XY2(chip8, instruction):
     return 0
 
 
-def op8XY0(chip, instruction):
+def op8XY3(chip8, instruction):
     return 0
 
 
-def op8XY1(chip, instruction):
+def op8XY4(chip8, instruction):
     return 0
 
 
-def op8XY2(chip, instruction):
+def op8XY5(chip8, instruction):
     return 0
 
 
-def op8XY3(chip, instruction):
+def op8XY6(chip8, instruction):
     return 0
 
 
-def op8XY4(chip, instruction):
+def op8XY7(chip8, instruction):
     return 0
 
 
-def op8XY5(chip, instruction):
+def op8XYE(chip8, instruction):
     return 0
 
 
-def op8XY6(chip, instruction):
+def op9XY0(chip8, instruction):
     return 0
 
 
-def op8XY7(chip, instruction):
+def opANNN(chip8, instruction):
     return 0
 
 
-def op8XYE(chip, instruction):
+def opBNNN(chip8, instruction):
     return 0
 
 
-def op9XY0(chip, instruction):
+def opCXNN(chip8, instruction):
     return 0
 
 
-def opANNN(chip, instruction):
+def opDXYN(chip8, instruction):
     return 0
 
 
-def opBNNN(chip, instruction):
+def opEX9E(chip8, instruction):
     return 0
 
 
-def opCXNN(chip, instruction):
+def opEXA1(chip8, instruction):
     return 0
 
 
-def opDXYN(chip, instruction):
+def opFX07(chip8, instruction):
     return 0
 
 
-def opEX9E(chip, instruction):
+def opFX0A(chip8, instruction):
     return 0
 
 
-def opEXA1(chip, instruction):
+def opFX15(chip8, instruction):
     return 0
 
 
-def opFX07(chip, instruction):
+def opFX18(chip8, instruction):
     return 0
 
 
-def opFX0A(chip, instruction):
+def opFX1E(chip8, instruction):
     return 0
 
 
-def opFX15(chip, instruction):
+def opFX29(chip8, instruction):
     return 0
 
 
-def opFX18(chip, instruction):
+def opFX33(chip8, instruction):
     return 0
 
 
-def opFX1E(chip, instruction):
-    return 0
-
-
-def opFX29(chip, instruction):
-    return 0
-
-
-def opFX33(chip, instruction):
-    return 0
-
-
-def opFX55(chip, instruction):
+def opFX55(chip8, instruction):
     return 0
 
 
 def opFX65(chip, instruction):
     return 0
-
-
-# def string_decode(instruction):
-#     """Given an instruction, return the function for executing its
-#     corresponding opcode"""
-#
-#     d1 = instruction[2]
-#     d2 = instruction[3]
-#     d3 = instruction[4]
-#     d4 = instruction[5]
-#
-#     if d1 == '0': # 00E0 or 00EE
-#         opcode = d1 + d2 + d3 + d4
-#         return opcodes[opcode]
-#     if d1 in ['1', '2']: # 1NNN or 2NNN
-#         return opcodes[d1 + "NNN"]
-#     if d1 in ['3', '4', '6', '7']: # 3XNN, 4XNN, 6XNN, or 7XNN
-#         return opcodes[d1 + "XNN"]
-#     if d1 == "5": # 5XY0
-#         return op5XY0yo
-#     if d1 == '8': # 8XY0->8XY7 and 8XYE
-#         return opcodes['8' + "XY" + d4]
-#     if d1 == '9':
-#         return op9XY0
-#     if d1 in ['A', 'B']: # ANNN or BNNN
-#         return opcodes[d1 + "NNN"]
-#     if d1 == 'C': # CXNN
-#         return opCXNN
-#     if d1 == 'D': # DXYN
-#         return opDXYN
-#     if d1 == 'E': # EX9E or EXA1
-#         if d4 == 'E':
-#             return opEX9E
-#         return opEXA1
-#     if d1 == 'F': # FX07, FX0A, FX15, FX18, FX1E, FX29, FX33, FX55, FX65
-#         return opcodes["FX" + d3 + d4]

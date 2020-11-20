@@ -148,9 +148,162 @@ class TestDecoding(unittest.TestCase):
     def test_opFX65(self):
         self.assertEqual(decode(0xF165), opFX65)
 
-# class TestOpCodes(unittest.TestCase):
-#         def test_op00E0(self):
-#             self.assertTrue(False)
+
+class TestOpCodes(unittest.TestCase):
+
+
+        def test_op00E0(self):
+            """Clears the screen"""
+            False
+
+
+        def test_op00EE(self):
+            """Returns from a subroutine"""
+            chippy = Chip8()
+            # Program is currently at 0x600
+            chippy.pc = 0x600
+            # Call subroutine at 0x400
+            op2NNN(chippy, 0x2400)
+            # Return to 0x600
+            op00EE(chippy, 0x00EE)
+            self.assertEqual(chippy.pc, 0x600)
+
+
+        def test_op1NNN(self):
+            """Jumps to address NNN"""
+            chippy = Chip8()
+            op1NNN(chippy, 0x1F90)
+            self.assertEqual(chippy.pc, 0xF90)
+
+
+        def test_op2NNN(self):
+            """Calls subroutine at NNN"""
+            chippy = Chip8()
+            chippy.pc = 0x301
+            op2NNN(chippy, 0x2ABC)
+            self.assertEqual(chippy.pc, 0xABC)
+            # Move stack pointer down 1 before accessing stack value
+            chippy.sp -=1
+            self.assertEqual(chippy.stack[chippy.sp], 0x301)
+
+
+        def test_op3XNN(self):
+            True
+
+
+        def test_op4XNN(self):
+            True
+
+
+        def test_op5XY0(self):
+            True
+
+
+        def test_op6XNN(self):
+            True
+
+
+        def test_op7XNN(self):
+            True
+
+
+        def test_op8XY0(self):
+            True
+
+
+        def test_op8XY1(self):
+            True
+
+
+        def test_op8XY2(self):
+            True
+
+
+        def test_op8XY3(self):
+            True
+
+
+        def test_op8XY4(self):
+            True
+
+
+        def test_op8XY5(self):
+            True
+
+
+        def test_op8XY6(self):
+            True
+
+
+        def test_op8XY7(self):
+            True
+
+
+        def test_op8XYE(self):
+            True
+
+
+        def test_op9XY0(self):
+            True
+
+
+        def test_opANNN(self):
+            True
+
+
+        def test_opBNNN(self):
+            True
+
+
+        def test_opCXNN(self):
+            True
+
+
+        def test_opDXYN(self):
+            True
+
+        def test_opEX9E(self):
+            True
+
+
+        def test_opEXA1(self):
+            True
+
+
+        def test_opFX07(self):
+            True
+
+
+        def test_opFX0A(self):
+            True
+
+
+        def test_opFX15(self):
+            True
+
+
+        def test_opFX18(self):
+            True
+
+
+        def test_opFX1E(self):
+            True
+
+
+        def test_opFX29(self):
+            True
+
+
+        def test_opFX33(self):
+            True
+
+
+        def test_opFX55(self):
+            True
+
+
+        def test_opFX65(self):
+            True
 
 
 if __name__ == '__main__':
