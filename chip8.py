@@ -1,4 +1,3 @@
-from opcodes import opcodes
 from graphics import font_set
 
 """The Chip8 interpreter"""
@@ -42,7 +41,7 @@ class Chip8:
         self.pc = 0
 
     def execute_instruction(instruction):
-        operation = decode(instruction)
+        operation = string_decode(hex(instruction))
         operation(self, instruction)
 
     # def emulate_cycle(self):
