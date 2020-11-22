@@ -332,11 +332,39 @@ class TestOpCodes(unittest.TestCase):
 
 
         def test_op8XY6(self):
-            True
+            """Stores LSB of VX in VF then shifts VX to the right by 1"""
+            chip = Chip8()
+            chip.v_registers[0x5] = 0b10101011
+            self.assertEqual(chip.v_registers[0xF], 0)
+            op8XY6(chip, 0x8506)
+            self.assertEqual(chip.v_registers[0xF], 1)
+            self.assertEqual(chip.v_registers[0x5], 0b1010101)
 
 
         def test_op8XY7(self):
-            True
+            chip = Chip8()
+
+            # Test no carry
+            chip.v_registers[0x1] = 0x5
+            chip.v_registers[0x2] = 0x6
+
+            self.assertEqual(chip.v_registers[0xF], 0x0)
+
+            op8XY7(chip, 0x8127)
+
+            self.assertEqual(chip.v_registers[0x1], 0x1)
+            self.assertEqual(chip.v_registers[0xF], 0x1)
+
+            # Test carry
+            chip.v_registers[0x3] = 0xA
+            chip.v_registers[0x4] = 0x2
+
+            op8XY7(chip, 0x8347)
+
+            self.assertEqual(chip.v_registers[0x3], 0xF8)
+            self.assertEqual(chip.v_registers[0xF], 0x0)
+
+
 
 
         def test_op8XYE(self):

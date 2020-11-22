@@ -214,6 +214,7 @@ def op8XY4(chip8, instruction):
         chip8.v_registers[0xF] = 0x1
         chip8.v_registers[X] %= 0x100
 
+
 def op8XY5(chip8, instruction):
     """Sets VX -= VY. Sets VF = NOT borrow"""
     X = nibble2(instruction)
@@ -229,13 +230,28 @@ def op8XY5(chip8, instruction):
     chip8.v_registers[X] -= chip8.v_registers[Y]
 
 
-
 def op8XY6(chip8, instruction):
-    return 0
+    """Stores LSB of VX in VF then shifts VX to the right by 1"""
+    X = nibble2(instruction)
+    Y = nibble3(instruction)
+    chip8.v_registers[0xF] = chip8.v_registers[X] & 0x1
+    chip8.v_registers[X] = chip8.v_registers[X] >> 1
 
 
 def op8XY7(chip8, instruction):
-    return 0
+    """Sets VX = VY - VX. Sets VF = NOT borrow"""
+    X = nibble2(instruction)
+    Y = nibble3(instruction)
+
+    # check for borrow
+    if chip8.v_registers[Y] > chip8.v_registers[X]:
+        chip8.v_registers[0xF] = 1
+    else:
+        chip8.v_registers[0xF] = 0
+        chip8.v_registers[Y] += 0x100
+
+    chip8.v_registers[X] = (chip8.v_registers[Y] - chip8.v_registers[X])
+
 
 
 def op8XYE(chip8, instruction):
