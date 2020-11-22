@@ -243,33 +243,92 @@ class TestOpCodes(unittest.TestCase):
 
 
         def test_op7XNN(self):
+            """Sets VX += NN"""
             chip = Chip8()
+
+            # Normal Case
             chip.v_registers[0xF] = 0xA
             op7XNN(chip, 0x7F01)
             self.assertEqual(chip.v_registers[0xF], 0xB)
 
+            # Wraparound Case
+            chip.v_registers[0xA] = 0xFF
+            op7XNN(chip, 0x7AAB)
+            self.assertEqual(chip.v_registers[0xA], 0xAA)
+
+
         def test_op8XY0(self):
-            True
+            """Sets VX = VY"""
+            chip = Chip8()
+            chip.v_registers = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0xFF,
+                                0xAA]
+            op8XY0(chip, 0x8EF0)
+            self.assertEqual(0xAA, chip.v_registers[0xE])
 
 
         def test_op8XY1(self):
-            True
+            """Sets VX = (VX or VY)"""
+            chip = Chip8()
+            chip.v_registers[0x0] = 0b10001001
+            chip.v_registers[0x1] = 0b00000010
+            op8XY1(chip, 0x8011)
+            self.assertEqual(chip.v_registers[0x0], 0b10001011)
 
 
         def test_op8XY2(self):
-            True
+            """Sets VX = (VX and VY)"""
+            chip = Chip8()
+            chip.v_registers[0x0] = 0b10001001
+            chip.v_registers[0x1] = 0b00000010
+            op8XY2(chip, 0x8011)
+            self.assertEqual(chip.v_registers[0x0], 0b0000000)
 
 
         def test_op8XY3(self):
-            True
+            """Sets VX = (VX xor VY)"""
+            chip = Chip8()
+            chip.v_registers[0x0] = 0b11010101
+            chip.v_registers[0x1] = 0b11101010
+            op8XY3(chip, 0x8011)
+            self.assertEqual(chip.v_registers[0x0], 0b00111111)
 
 
         def test_op8XY4(self):
-            True
+            """Sets VX += VY"""
+            chip = Chip8()
+
+            # Normal Case
+            chip.v_registers[0xA] = 0xF0
+            chip.v_registers[0xB] = 0x0F
+            op8XY4(chip, 0x8AB4)
+            self.assertEqual(chip.v_registers[0xA], 0xFF)
+            self.assertEqual(chip.v_registers[0xF], 0x0)
+
+            # Wraparound case
+            chip.v_registers[0x1] = 0xEE
+            chip.v_registers[0x2] = 0x1C
+            op8XY4(chip, 0x8124)
+            self.assertEqual(chip.v_registers[0x1], 0xA)
+            self.assertEqual(chip.v_registers[0xF], 0x1)
 
 
         def test_op8XY5(self):
-            True
+            """Sets VX -= VY"""
+            chip = Chip8()
+
+            # Test no carry
+            chip.v_registers[0x1] = 0xFF
+            chip.v_registers[0x2] = 0x0F
+            op8XY5(chip, 0x8125)
+            self.assertEqual(chip.v_registers[0x1], 0xF0)
+            self.assertEqual(chip.v_registers[0xF], 1)
+
+            # Test carry
+            chip.v_registers[0xA] = 0xE
+            chip.v_registers[0xB] = 0xF
+            op8XY5(chip, 0x8AB5)
+            self.assertEqual(chip.v_registers[0xA], 0xFF)
+            self.assertEqual(chip.v_registers[0xF], 0)
 
 
         def test_op8XY6(self):

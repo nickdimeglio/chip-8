@@ -1,5 +1,6 @@
 """Functions for decoding and executing opcode"""
 
+
 def decode(instruction):
     """Given an instruction, return the function for executing its
     corresponding opcode"""
@@ -82,6 +83,28 @@ def decode(instruction):
             return opFX1E
 
 
+# Code for taking parts from an instruction
+
+def nibble1(instruction):
+    return (instruction & 0xF000) >> 12
+
+
+def nibble2(instruction):
+    return (instruction & 0x0F00) >> 8
+
+
+def nibble3(instruction):
+    return (instruction & 0x00F0) >> 4
+
+
+def nibble4(instruction):
+    return instruction & 0x000F
+
+
+
+# Code for executing opcodes
+
+
 def op00E0(chip8, instruction):
     return 0
 
@@ -109,7 +132,8 @@ def op2NNN(chip8, instruction):
 
 def op3XNN(chip8, instruction):
     """Skips the next instruction if VX == NN"""
-    VX = chip8.v_registers[(instruction & 0x0F00) >> 8]
+    X = nibble2(instruction)
+    VX = chip8.v_registers[X]
     NN = instruction & 0x00FF
     if VX == NN:
         chip8.pc += 2
@@ -117,7 +141,8 @@ def op3XNN(chip8, instruction):
 
 def op4XNN(chip8, instruction):
     """Skips the next instruction if VX != NN"""
-    VX = chip8.v_registers[(instruction & 0x0F00) >> 8]
+    X = nibble2(instruction)
+    VX = chip8.v_registers[X]
     NN = instruction & 0x00FF
     if VX != NN:
         chip8.pc += 2
@@ -125,48 +150,84 @@ def op4XNN(chip8, instruction):
 
 def op5XY0(chip8, instruction):
     """Skips the next instruction if VX == VY"""
-    VX = chip8.v_registers[(instruction & 0x0F00) >> 8]
-    VY = chip8.v_registers[(instruction & 0X00F0) >> 4]
+    X = nibble2(instruction)
+    Y = nibble3(instruction)
+    VX = chip8.v_registers[X]
+    VY = chip8.v_registers[Y]
     if VX == VY:
         chip8.pc +=2
 
 
 def op6XNN(chip8, instruction):
     """Sets VX = NN"""
-    X = (instruction & 0x0F00) >> 8
+    X = nibble2(instruction)
     NN = instruction & 0x00FF
     chip8.v_registers[X] = NN
 
 
 def op7XNN(chip8, instruction):
-    """Adds NN to VX"""
-    X = (instruction & 0x0F00) >> 8
+    """Sets VX += NN"""
+    X = nibble2(instruction)
     NN = instruction & 0x00FF
     chip8.v_registers[X] += NN
 
+    # Check for wraps
+    chip8.v_registers[X] %= 0x100
+
 
 def op8XY0(chip8, instruction):
-    return 0
+    """Sets VX = VY"""
+    X = nibble2(instruction)
+    Y = nibble3(instruction)
+    chip8.v_registers[X] = chip8.v_registers[Y]
 
 
 def op8XY1(chip8, instruction):
-    return 0
+    """Sets VX = (VX or VY)"""
+    X = nibble2(instruction)
+    Y = nibble3(instruction)
+    chip8.v_registers[X] = chip8.v_registers[X] | chip8.v_registers[Y]
 
 
 def op8XY2(chip8, instruction):
-    return 0
+    """Sets VX = (VX and VY)"""
+    X = nibble2(instruction)
+    Y = nibble3(instruction)
+    chip8.v_registers[X] = chip8.v_registers[X] & chip8.v_registers[Y]
 
 
 def op8XY3(chip8, instruction):
-    return 0
+    """Sets VX = (VX xor VY)"""
+    X = nibble2(instruction)
+    Y = nibble3(instruction)
+    chip8.v_registers[X] = chip8.v_registers[X] ^ chip8.v_registers[Y]
 
 
 def op8XY4(chip8, instruction):
-    return 0
+    """Sets VX += VY, Sets VF = carry"""
+    X = nibble2(instruction)
+    Y = nibble3(instruction)
+    chip8.v_registers[X] += chip8.v_registers[Y]
 
+    # Check for carry
+    if chip8.v_registers[X] > 0xFF:
+        chip8.v_registers[0xF] = 0x1
+        chip8.v_registers[X] %= 0x100
 
 def op8XY5(chip8, instruction):
-    return 0
+    """Sets VX -= VY. Sets VF = NOT borrow"""
+    X = nibble2(instruction)
+    Y = nibble3(instruction)
+
+    # check for borrow
+    if chip8.v_registers[X] > chip8.v_registers[Y]:
+        chip8.v_registers[0xF] = 1
+    else:
+        chip8.v_registers[0xF] = 0
+        chip8.v_registers[X] += 0x100
+
+    chip8.v_registers[X] -= chip8.v_registers[Y]
+
 
 
 def op8XY6(chip8, instruction):
