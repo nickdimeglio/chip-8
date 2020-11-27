@@ -154,8 +154,16 @@ class TestOpCodes(unittest.TestCase):
 
         def test_op00E0(self):
             """Clears the screen"""
-            True
-
+            chip = Chip8()
+            chip.gfx[10] = 1
+            chip.gfx[892] = 1
+            self.assertEqual(chip.gfx[10], 1)
+            self.assertEqual(chip.gfx[892], 1)
+            self.assertTrue(chip.gfx != ([0] * (64 * 32)))
+            op00E0(chip, 0x00E0)
+            self.assertEqual(chip.gfx[10], 0)
+            self.assertEqual(chip.gfx[892], 0)
+            self.assertEqual(chip.gfx, ([0] * (64 * 32)))
 
         def test_op00EE(self):
             """Returns from a subroutine"""
@@ -335,8 +343,11 @@ class TestOpCodes(unittest.TestCase):
             """Stores LSB of VX in VF then shifts VX to the right by 1"""
             chip = Chip8()
             chip.v_registers[0x5] = 0b10101011
+
             self.assertEqual(chip.v_registers[0xF], 0)
+
             op8XY6(chip, 0x8506)
+
             self.assertEqual(chip.v_registers[0xF], 1)
             self.assertEqual(chip.v_registers[0x5], 0b1010101)
 
@@ -365,25 +376,60 @@ class TestOpCodes(unittest.TestCase):
             self.assertEqual(chip.v_registers[0xF], 0x0)
 
 
-
-
         def test_op8XYE(self):
-            True
+            """Stores MSB of VX in VF then shifts VX to the left by 1"""
+            chip = Chip8()
+            chip.v_registers[0xC] = 0b10101010
+
+            self.assertEqual(chip.v_registers[0xF], 0)
+
+            op8XYE(chip, 0x8CAE)
+
+            self.assertEqual(chip.v_registers[0xC], 0b1010100)
+            self.assertEqual(chip.v_registers[0xF], 0x1)
 
 
         def test_op9XY0(self):
-            True
+            chip = Chip8()
+            chip.pc = 0x400
+
+            # Test equal registers
+            chip.v_registers[0x1] = 0xFF
+            chip.v_registers[0x2] = 0xFF
+
+            op9XY0(chip, 0x9120)
+            self.assertEqual(chip.pc, 0x400)
+
+
+            # Test unequal registers
+            chip.v_registers[0xA] = 0xFF
+            chip.v_registers[0xB] = 0X11
+
+            op9XY0(chip, 0x9AB0)
+            self.assertEqual(chip.pc, 0x402)
 
 
         def test_opANNN(self):
-            True
+            """"Sets address = NNN"""
+            chip = Chip8()
+            self.assertEqual(chip.address, 0x0)
+            opANNN(chip, 0xA5FF)
+            self.assertEqual(chip.address, 0x5FF)
 
 
         def test_opBNNN(self):
-            True
+            """Jumps to instruction V0 + NNN"""
+            chip = Chip8()
+            chip.v_registers[0] = 0x3FE
+            self.assertEqual(chip.pc, 0x200)
+
+            opBNNN(chip, 0xB200)
+
+            self.assertEqual(chip.pc, 0x5FE)
 
 
         def test_opCXNN(self):
+            """Tested manually"""
             True
 
 

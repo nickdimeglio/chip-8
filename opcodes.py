@@ -1,5 +1,7 @@
+import random
 """Functions for decoding and executing opcode"""
 
+# Code for decoding instructions into opcodes
 
 def decode(instruction):
     """Given an instruction, return the function for executing its
@@ -104,9 +106,9 @@ def nibble4(instruction):
 
 # Code for executing opcodes
 
-
 def op00E0(chip8, instruction):
-    return 0
+    """Clear the screen"""
+    chip8.gfx = [0] * (64 * 32)
 
 
 def op00EE(chip8, instruction):
@@ -118,7 +120,7 @@ def op00EE(chip8, instruction):
 
 
 def op1NNN(chip8, instruction):
-    """Jump to address NNN"""
+    """Jumps to address NNN"""
     # May need to change this to jump to NNN - 0x2 bc pc += 2 after
     chip8.pc = instruction & 0x0FFF
 
@@ -233,7 +235,6 @@ def op8XY5(chip8, instruction):
 def op8XY6(chip8, instruction):
     """Stores LSB of VX in VF then shifts VX to the right by 1"""
     X = nibble2(instruction)
-    Y = nibble3(instruction)
     chip8.v_registers[0xF] = chip8.v_registers[X] & 0x1
     chip8.v_registers[X] = chip8.v_registers[X] >> 1
 
@@ -253,28 +254,50 @@ def op8XY7(chip8, instruction):
     chip8.v_registers[X] = (chip8.v_registers[Y] - chip8.v_registers[X])
 
 
-
 def op8XYE(chip8, instruction):
-    return 0
+    """Stores MSB of VX in VF then shifts VX to the left by 1"""
+    X = nibble2(instruction)
+    chip8.v_registers[0xF] = (chip8.v_registers[X] & 0b10000000) >> 7
+    chip8.v_registers[X] = ((chip8.v_registers[X] << 1) & 0xFF)
 
 
 def op9XY0(chip8, instruction):
-    return 0
+    """Skips the next instruction if VX != VY"""
+    X = nibble2(instruction)
+    Y = nibble3(instruction)
+
+    if chip8.v_registers[X] != chip8.v_registers[Y]:
+        chip8.pc +=2
 
 
 def opANNN(chip8, instruction):
-    return 0
+    """Sets address = NNN"""
+    chip8.address = (0x0FFF & instruction)
 
 
 def opBNNN(chip8, instruction):
-    return 0
+    """Jumps to instruction V[0] + NNN"""
+    V0 = chip8.v_registers[0x0]
+    NNN = 0x0FFF & instruction
+    chip8.pc = V0 + NNN
 
 
 def opCXNN(chip8, instruction):
-    return 0
+    """Sets VX = NN & a random number"""
+    rando = random.randint(0, 255)
+    print(rando)
+    NN = 0xFF & instruction
+    X = nibble2(instruction)
+    chip8.v_registers[X] = NN & rando
 
 
 def opDXYN(chip8, instruction):
+    """Draws a sprite at coordinate (VX, VY) that has a width of 8 pixels and
+    a height of N+1 pixels. Each row of 8 pixels is read as bit-coded starting
+    from memory location I; I value doesn’t change after the execution of this
+    instruction. As described above, VF is set to 1 if any screen pixels are
+    flipped from set to unset when the sprite is drawn, and to 0 if that
+    doesn’t happen"""
     return 0
 
 
