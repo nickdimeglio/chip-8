@@ -3,6 +3,22 @@ import unittest
 from chip8 import *
 from opcodes import *
 
+class helpers():
+        def printscreen(chip):
+            print("\n")
+            row = 0
+            while row < 31:
+                c_row = chip.gfx[(row*64):(row*64+63)]
+                p_row = ""
+                for b in c_row:
+                    if b == 1:
+                        p_row+="0"
+                    else:
+                        p_row+=" "
+                print(p_row)
+                row+=1
+
+
 class TestChip8(unittest.TestCase):
 
     def test_instantiation(self):
@@ -434,7 +450,11 @@ class TestOpCodes(unittest.TestCase):
 
 
         def test_opDXYN(self):
-            True
+            chip = Chip8()
+            chip.gfx[120:660] = [1]*540
+            chip.gfx[1800:1900] = [1]*100
+            helpers.printscreen(chip)
+
 
         def test_opEX9E(self):
             True
@@ -445,7 +465,13 @@ class TestOpCodes(unittest.TestCase):
 
 
         def test_opFX07(self):
-            True
+            """Sets VX to the value of the delay timer"""
+            chip = Chip8()
+            chip.delay_timer = 0x300
+
+            self.assertEqual(chip.v_registers[0xE], 0)
+            opFX07(chip, 0xFE07)
+            self.assertEqual(chip.v_registers[0xE], 0x300)
 
 
         def test_opFX0A(self):

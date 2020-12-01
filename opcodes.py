@@ -298,6 +298,38 @@ def opDXYN(chip8, instruction):
     instruction. As described above, VF is set to 1 if any screen pixels are
     flipped from set to unset when the sprite is drawn, and to 0 if that
     doesn’t happen"""
+
+    """
+    X = nibble2(instruction)
+    Y = nibble3(instruction)
+    N = nibble4(instruction)
+
+    # get N bytes from memory, starting at i
+    bits = chip.memory[i:i+(N*8)]
+
+    """
+
+
+
+    # store screen indices in list
+    # screen indices at (x, y):(x, y)+8,
+    #                   (x, y-1):(x, y-1)+8,
+    #                   ...,
+    #                   (x, y-n):(x, y-n)+8
+    """
+    pixel_addresses = []
+    start = X + (64*Y)
+    for i in range(0, N):
+        pixel_addresses[start+i:start+i+8]
+        """
+
+    # loop through provided bits and screen inidices, updating each
+    # set VF=1 if any bit is changed from 1 to 0
+
+    # Screen is 64 columns, 32 rows
+    # Coordinate (60, 0) = gfx[60]
+    # Coordinate (5, 10) = gfx[63 * 10 + 5] = gfx[635]
+
     return 0
 
 
@@ -310,7 +342,9 @@ def opEXA1(chip8, instruction):
 
 
 def opFX07(chip8, instruction):
-    return 0
+    """Sets VX to the value of the delay timer"""
+    X = nibble2(instruction)
+    chip8.v_registers[X] = chip8.delay_timer
 
 
 def opFX0A(chip8, instruction):
