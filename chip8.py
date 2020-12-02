@@ -56,3 +56,22 @@ class Chip8:
 
     def set_keys(self):
         self.key = 0
+
+
+
+
+    # Functions for Testing
+
+    def printscreen(self):
+        print("\n")
+        row = 0
+        while row < 31:
+            c_row = self.gfx[(row*64):(row*64+63)]
+            p_row = ""
+            for b in c_row:
+                if b == 1:
+                    p_row+="0"
+                else:
+                    p_row+=" "
+            print(p_row)
+            row+=1

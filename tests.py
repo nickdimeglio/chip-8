@@ -451,9 +451,9 @@ class TestOpCodes(unittest.TestCase):
 
         def test_opDXYN(self):
             chip = Chip8()
-            chip.gfx[120:660] = [1]*540
-            chip.gfx[1800:1900] = [1]*100
-            helpers.printscreen(chip)
+            chip.gfx = [1]*2048
+            chip.gfx[320:383] = [0]*63
+            chip.printscreen()
 
 
         def test_opEX9E(self):

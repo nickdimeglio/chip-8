@@ -292,45 +292,55 @@ def opCXNN(chip8, instruction):
 
 
 def opDXYN(chip8, instruction):
-    """Draws a sprite at coordinate (VX, VY) that has a width of 8 pixels and
-    a height of N+1 pixels. Each row of 8 pixels is read as bit-coded starting
-    from memory location I; I value doesn’t change after the execution of this
-    instruction. As described above, VF is set to 1 if any screen pixels are
-    flipped from set to unset when the sprite is drawn, and to 0 if that
-    doesn’t happen"""
+    """Take the N-bytes of memory starting at the current index and XOR
+    them onto the screen as N 1-Byte rows, starting at (X, Y).
+    If any pixels are erased, set VF = 1, otherwise set VF = 0."""
 
-    """
     X = nibble2(instruction)
     Y = nibble3(instruction)
     N = nibble4(instruction)
 
-    # get N bytes from memory, starting at i
-    bits = chip.memory[i:i+(N*8)]
+    # get N bytes from memory, starting at i, and store in binary
+    sprite = 0b0
 
-    """
+    for byte in chip.memory[i:i+(N-1)]:
+        sprite << 8
+        sprite = sprite | byte
+
+    # get the current state of the relevant screen bits, row by row
+    draw_start = X + (Y * 63)
+    draw_area = []
+
+    for row in range(N):
+        start = row * 64
+        end = start + 7
+        draw_area += chip8.gfx[start:end]
+
+    # store current state of relevant screen bits in binary
+    canvas = 0b0
+
+    for pixel in draw_area:
+        canvas << 1
+        canvas = canvas | pixel
+
+    # !!!
+    # XOR the sprite across the current state of the drawing area
+    drawing = canvas ^ sprite
+
+    # Update the screen to reflect the new value
+    for pixel in reversed(draw_area):
+        chip8.gfx[pixel] = drawing & 0b1
+        drawing >> 1
+
+    # chip.gfx[draw_start:draw_end] = drawing
+
+    # Set VF to 1 if anything was erased, 0 otherwise
+    if canvas & drawing = drawing:
+        chip8.v_registers[0xF] = 1
+    else:
+        chip8.v_registers[0xF] = 0
 
 
-
-    # store screen indices in list
-    # screen indices at (x, y):(x, y)+8,
-    #                   (x, y-1):(x, y-1)+8,
-    #                   ...,
-    #                   (x, y-n):(x, y-n)+8
-    """
-    pixel_addresses = []
-    start = X + (64*Y)
-    for i in range(0, N):
-        pixel_addresses[start+i:start+i+8]
-        """
-
-    # loop through provided bits and screen inidices, updating each
-    # set VF=1 if any bit is changed from 1 to 0
-
-    # Screen is 64 columns, 32 rows
-    # Coordinate (60, 0) = gfx[60]
-    # Coordinate (5, 10) = gfx[63 * 10 + 5] = gfx[635]
-
-    return 0
 
 
 def opEX9E(chip8, instruction):
