@@ -1,10 +1,9 @@
 from tkinter import Tk, Canvas, PhotoImage, mainloop
 from math import floor
 
-
-
 """Font Set"""
 font_set = ['F'] * 80
+
 
 def setup_graphics():
     return 0
