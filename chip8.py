@@ -65,13 +65,15 @@ class Chip8:
     def printscreen(self):
         print("\n")
         row = 0
+        print(" " + "-" * 64)
         while row <= 31:
             c_row = self.gfx[(row*64):(row*64+64)]
             p_row = ""
             for b in c_row:
                 if b == 1:
-                    p_row+="0"
+                    p_row+="X"
                 else:
-                    p_row+="S"
-            print(p_row)
+                    p_row+=" "
+            print("|" + p_row + "|")
             row+=1
+        print(" " + "-" * 64)

@@ -300,46 +300,39 @@ def opDXYN(chip8, instruction):
     VX = chip8.v_registers[nibble2(instruction)]
     VY = chip8.v_registers[nibble3(instruction)]
     N = nibble4(instruction)
-
-    # get N bytes from memory, starting at i, and store in binary
-    sprite = 0b0
     i = chip8.address
-    print("\n")
-    for byte in chip8.memory[i:i+(N-1)]:
-        sprite <<= 8
-        sprite |= byte
 
-    # get the addresses of the relevant screen bits, row by row
+    # get N bytes from memory, starting at i
+    sprite_loc = chip8.memory[i:i+(N-1)]
+    sprite = []
+    for byte in sprite_loc:
+        pixels = bin(byte)
+        for p in pixels[2:]:
+            sprite.append(int(p))
+
+    # get the address of the relevant screen bits
     draw_start = VX + (VY * 64)
     draw_area = []
 
     for row in range(N):
         start = draw_start + (row * 64)
         end = start + 8
+
         for address in range(start, end):
             draw_area.append(address)
 
-    # store current state of relevant screen bits in binary
-    canvas = 0b0
-
-    for address in draw_area:
-        canvas <<= 1
-        canvas |= chip8.gfx[address]
-
     # XOR the sprite across the current state of the drawing area
-    drawing = canvas ^ sprite
+    chip8.v_registers[0xF] = 0
 
-    # Update the screen to reflect the new value
-    for address in reversed(draw_area):
-        chip8.gfx[address] = drawing & 0b1
-        drawing >>= 1
-
-    # !!!
-    # Set VF to 1 if anything was erased, 0 otherwise
-    if sprite & drawing == drawing:
-        chip8.v_registers[0xF] = 1
-    else:
-        chip8.v_registers[0xF] = 0
+    for x, y in zip(sprite, draw_area):
+        state = chip8.gfx[y]
+        if x == 0:
+            continue
+        if state == 1:
+            chip8.gfx[y] = 0
+            chip8.v_registers[0xF] = 1
+        else:
+            chip8.gfx[y] = 1
 
 
 def opEX9E(chip8, instruction):
