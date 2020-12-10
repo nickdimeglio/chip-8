@@ -300,6 +300,69 @@ def opDXYN(chip8, instruction):
     VX = chip8.v_registers[nibble2(instruction)]
     VY = chip8.v_registers[nibble3(instruction)]
     N = nibble4(instruction)
+
+    # get N bytes from memory, starting at i, and store in binary
+    sprite = 0b0
+    i = chip8.address
+    for byte in chip8.memory[i:i+(N-1)]:
+        sprite <<= 8
+        sprite |= byte
+
+    # get the addresses of the relevant screen bits, row by row
+    draw_start = VX + (VY * 64)
+    draw_area = []
+
+    for row in range(N):
+        start = draw_start + (row * 64)
+        end = start + 8
+
+        for address in range(start, end):
+            draw_area.append(address)
+
+   # store current state of relevant screen bits in binary
+    canvas = 0b0
+
+    for address in draw_area:
+        canvas <<= 1
+        canvas |= chip8.gfx[address]
+
+    # XOR the sprite across the current state of the drawing area
+    drawing = canvas ^ sprite
+    print(bin(drawing))
+    num_pixels = drawing.bit_length() # store length of drawing rep for later
+
+    # Update the screen to reflect the new value
+    for address in reversed(draw_area):
+        chip8.gfx[address] = drawing & 0b1
+        drawing >>= 1
+
+    # Set VF to 0 if nothing was erased, 1 otherwise
+
+    print(num_pixels)
+    all_1s = (2**num_pixels)-1
+    print(bin(all_1s))
+    off_pixels = drawing ^ all_1s
+
+    print(bin(off_pixels))
+    print(bin(sprite))
+    print(bin(sprite & off_pixels))
+
+    if sprite & off_pixels == 0:
+        chip8.v_registers[0xF] = 0
+    else:
+        chip8.v_registers[0xF] = 1
+
+
+
+
+def string_opDXYN(chip8, instruction):
+    """Take the N-bytes of memory starting at the current index and XOR
+    them onto the screen as N 1-Byte rows, starting at (VX, VY).
+    If any pixels are erased, set VF = 1, otherwise set VF = 0."""
+
+    VX = chip8.v_registers[nibble2(instruction)]
+    VY = chip8.v_registers[nibble3(instruction)]
+    N = nibble4(instruction)
     i = chip8.address
 
     # get N bytes from memory, starting at i
