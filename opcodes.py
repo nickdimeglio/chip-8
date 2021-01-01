@@ -329,26 +329,15 @@ def opDXYN(chip8, instruction):
     # XOR the sprite across the current state of the drawing area
     drawing = canvas ^ sprite
 
-    # Track which pixels are off after screen update
-    num_pixels = drawing.bit_length()
-    if num_pixels == 0:
-        black_screen = 1
-    else:
-        black_screen = ((2**num_pixels)-1)
-    off_pixels = drawing ^ black_screen
+    # Set VF to 0. Update the screen to reflect the new value, and
+    # flip VF to 1 if a pixel is turned off.
+    chip8.v_registers[0xF] = 0
 
-    # Update the screen to reflect the new value
     for address in reversed(draw_area):
+        if chip8.gfx[address] == 1 and (drawing & 0b1) == 0:
+            chip8.v_registers[0xF] = 1
         chip8.gfx[address] = drawing & 0b1
         drawing >>= 1
-
-    # Set VF to 0 if nothing was erased, 1 otherwise
-    if sprite & off_pixels == 0:
-        print("None turned off.")
-        chip8.v_registers[0xF] = 0
-    else:
-        print("Some turned off.")
-        chip8.v_registers[0xF] = 1
 
 
 def opEX9E(chip8, instruction):
