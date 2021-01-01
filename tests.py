@@ -381,7 +381,8 @@ class TestOpCodes(unittest.TestCase):
 
     def test_opDXYN(self):
         chip = Chip8()
-        chip.memory[0x200:0x500] = [0xFF] * 0x300
+        chip.memory[0x200:0x20B] = [0xFF] * 0xC
+        chip.memory[0x204:0x208] = [0x0] * 0x4
         chip.address = 0x200
 
         chip.v_registers[0xA] = 28
@@ -390,9 +391,14 @@ class TestOpCodes(unittest.TestCase):
         chip.printscreen()
         chip.gfx = [1]*2048
         chip.printscreen()
-        opDXYN(chip, 0xDABA)
+        opDXYN(chip, 0xDABC)
 
-        # self.assertEqual(chip.v_registers[0xF], 0x1)
+        self.assertEqual(chip.v_registers[0xF], 0x1)
+        chip.printscreen()
+
+        opDXYN(chip, 0xDABC)
+
+        self.assertEqual(chip.v_registers[0xF], 0x0)
         chip.printscreen()
 
     def test_opEX9E(self):
