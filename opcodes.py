@@ -343,11 +343,13 @@ def opDXYN(chip8, instruction):
 def opEX9E(chip8, instruction):
     VX = chip8.v_registers[nibble2(instruction)]
     if chip8.key[VX] == 1:
-        chip8.pc +=2
+        chip8.pc += 2
 
 
 def opEXA1(chip8, instruction):
-    return 0
+    VX = chip8.v_registers[nibble2(instruction)]
+    if chip8.key[VX] == 0:
+        chip8.pc += 2
 
 
 def opFX07(chip8, instruction):
@@ -357,27 +359,53 @@ def opFX07(chip8, instruction):
 
 
 def opFX0A(chip8, instruction):
-    return 0
+    """Pause program until a key is pressed"""
+    while all(key == 0 for key in chip8.key):
+        continue
 
 
 def opFX15(chip8, instruction):
-    return 0
+    """Set delay timer to VX"""
+    VX = chip8.v_registers[nibble2(instruction)]
+    chip8.delay_timer = VX
 
 
 def opFX18(chip8, instruction):
-    return 0
+    """Set sound timer to VX"""
+    VX = chip8.v_registers[nibble2(instruction)]
+    chip8.sound_timer = VX
 
 
 def opFX1E(chip8, instruction):
-    return 0
+    """Set address to address + VX"""
+    VX = chip8.v_registers[nibble2(instruction)]
+    chip8.address += VX
 
 
 def opFX29(chip8, instruction):
-    return 0
+    """Set address to the location of sprite for digit VX"""
+    VX = chip8.v_registers[nibble2(instruction)]
+    chip8.address = VX * 5
 
 
 def opFX33(chip8, instruction):
-    return 0
+    """Take decimal value of VX, store hundreds in memory[I], tens in I+1,
+       ones in I+2"""
+    VX = chip8.v_registers[nibble2(instruction)]
+    value = str(VX)
+    address = chip8.address
+    if len(value) == 3:
+        chip8.memory[address] = int(value[0])
+        chip8.memory[address + 1] = int(value[1])
+        chip8.memory[address + 2] = int(value[2])
+    elif len(value) == 2:
+        chip8.memory[address] = 0
+        chip8.memory[address + 1] = value[0]
+        chip8.memory[address + 2] = value[1]
+    elif len(value) == 1:
+        chip8.memory[address] = 0
+        chip8.memory[address + 1] = 0
+        chip8.memory[address + 2] = value[0]
 
 
 def opFX55(chip8, instruction):

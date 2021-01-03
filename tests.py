@@ -380,6 +380,7 @@ class TestOpCodes(unittest.TestCase):
         True
 
     def test_opDXYN(self):
+        """Draws a sprite on the screen"""
         chip = Chip8()
         chip.memory[0x200:0x20B] = [0xFF] * 0xC
         chip.memory[0x204:0x208] = [0x0] * 0x4
@@ -402,6 +403,8 @@ class TestOpCodes(unittest.TestCase):
         chip.printscreen()
 
     def test_opEX9E(self):
+        """Skips next instruction if the key
+        with value VX is pressed"""
         chip = Chip8()
         chip.key[0xA] = 1
         chip.v_registers[0xA] = 0xA
@@ -413,7 +416,16 @@ class TestOpCodes(unittest.TestCase):
 
 
     def test_opEXA1(self):
-        True
+        """Skips next instruction if the key
+        with value VX is not pressed"""
+        chip = Chip8()
+        chip.key[0xA] = 1
+        chip.v_registers[0xA] = 0xA
+        opEXA1(chip, 0xEAA1)
+        self.assertEqual(chip.pc, 0x200)
+        opEXA1(chip, 0xEBA1)
+        self.assertEqual(chip.pc, 0x202)
+
 
     def test_opFX07(self):
         """Sets VX to the value of the delay timer"""
@@ -428,19 +440,56 @@ class TestOpCodes(unittest.TestCase):
         True
 
     def test_opFX15(self):
-        True
+        """Set delay timer to VX"""
+        chip = Chip8()
+        self.assertEqual(chip.delay_timer, -1)
+        chip.v_registers[0x9] = 0xBB
+        opFX15(chip, 0xF915)
+        self.assertEqual(chip.delay_timer, 0xBB)
+
 
     def test_opFX18(self):
-        True
+        """Set sound timer to VX"""
+        chip = Chip8()
+        self.assertEqual(chip.sound_timer, -1)
+        chip.v_registers[0x9] = 0xBB
+        opFX18(chip, 0xF915)
+        self.assertEqual(chip.sound_timer, 0xBB)
+
 
     def test_opFX1E(self):
-        True
+        """Set address to address + VX"""
+        chip = Chip8()
+        chip.address = 0x4
+        self.assertEqual(chip.address, 0x4)
+        chip.v_registers[0x7] = 0xFAB
+        opFX1E(chip, 0xF71E)
+        self.assertEqual(chip.address, 0xFAF)
+
 
     def test_opFX29(self):
-        True
+        """Set address to the location of sprite for digit VX"""
+        chip = Chip8()
+        chip.v_registers[0x1] = 0xB
+        chip.v_registers[0x2] = 0x5
+        opFX29(chip, 0xF129)
+        self.assertEqual(chip.address, 55)
+        opFX29(chip, 0xF229)
+        self.assertEqual(chip.address, 25)
+
 
     def test_opFX33(self):
-        True
+       """Take decimal value of VX, store hundreds in memory[I], tens in I+1,
+       ones in I+2"""
+       chip = Chip8()
+       chip.v_registers[0x3] = 0xF1
+       chip.address = 0x200
+       self.assertEqual(chip.address, 0x200)
+       opFX33(chip, 0xF333)
+       self.assertEqual(chip.memory[0x200], 2)
+       self.assertEqual(chip.memory[0x201], 4)
+       self.assertEqual(chip.memory[0x202], 1)
+
 
     def test_opFX55(self):
         True
