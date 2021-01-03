@@ -13,76 +13,76 @@ def decode(instruction):
 
     if instruction == 0x00E0:
         return op00E0
-    if instruction == 0x00EE:
+    elif instruction == 0x00EE:
         return op00EE
-    if H == 0x1:
+    elif H == 0x1:
         return op1NNN
-    if H == 0x2:
+    elif H == 0x2:
         return op2NNN
-    if H == 0x3:
+    elif H == 0x3:
         return op3XNN
-    if H == 0x4:
+    elif H == 0x4:
         return op4XNN
-    if H == 0x5:
+    elif H == 0x5:
         return op5XY0
-    if H == 0x6:
+    elif H == 0x6:
         return op6XNN
-    if H == 0x7:
+    elif H == 0x7:
         return op7XNN
-    if H == 0x8:
+    elif H == 0x8:
         if L == 0x0:
             return op8XY0
-        if L == 0x1:
+        elif L == 0x1:
             return op8XY1
-        if L == 0x2:
+        elif L == 0x2:
             return op8XY2
-        if L == 0x3:
+        elif L == 0x3:
             return op8XY3
-        if L == 0x4:
+        elif L == 0x4:
             return op8XY4
-        if L == 0x5:
+        elif L == 0x5:
             return op8XY5
-        if L == 0x6:
+        elif L == 0x6:
             return op8XY6
-        if L == 0x7:
+        elif L == 0x7:
             return op8XY7
-        if L == 0xE:
+        elif L == 0xE:
             return op8XYE
-    if H == 0x9:
+    elif H == 0x9:
         return op9XY0
-    if H == 0xA:
+    elif H == 0xA:
         return opANNN
-    if H == 0xB:
+    elif H == 0xB:
         return opBNNN
-    if H == 0xC:
+    elif H == 0xC:
         return opCXNN
-    if H == 0xD:
+    elif H == 0xD:
         return opDXYN
-    if H == 0xE:
+    elif H == 0xE:
         if L == 0xE:
             return opEX9E
-        if L == 0x1:
+        elif L == 0x1:
             return opEXA1
-    if H == 0xF:
+    elif H == 0xF:
         if L == 0x3:
             return opFX33
-        if L == 0x5:
+        elif L == 0x5:
             D3 = (instruction & 0x00F0) >> 4
             if D3 == 0x1:
                 return opFX15
-            if D3 == 0x5:
+            elif D3 == 0x5:
                 return opFX55
-            if D3 == 0x6:
+            elif D3 == 0x6:
                 return opFX65
-        if L == 0x7:
+        elif L == 0x7:
             return opFX07
-        if L == 0x8:
+        elif L == 0x8:
             return opFX18
-        if L == 0x9:
+        elif L == 0x9:
             return opFX29
-        if L == 0xA:
+        elif L == 0xA:
             return opFX0A
-        if L == 0xE:
+        elif L == 0xE:
             return opFX1E
 
 
@@ -341,7 +341,9 @@ def opDXYN(chip8, instruction):
 
 
 def opEX9E(chip8, instruction):
-    return 0
+    VX = chip8.v_registers[nibble2(instruction)]
+    if chip8.key[VX] == 1:
+        chip8.pc +=2
 
 
 def opEXA1(chip8, instruction):

@@ -402,7 +402,15 @@ class TestOpCodes(unittest.TestCase):
         chip.printscreen()
 
     def test_opEX9E(self):
-        True
+        chip = Chip8()
+        chip.key[0xA] = 1
+        chip.v_registers[0xA] = 0xA
+
+        opEX9E(chip, 0xEB9E)
+        self.assertEqual(chip.pc, 0x200)
+        opEX9E(chip, 0xEA9E)
+        self.assertEqual(chip.pc, 0x202)
+
 
     def test_opEXA1(self):
         True

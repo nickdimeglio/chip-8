@@ -41,18 +41,18 @@ class Chip8:
         self.pc = 0
 
     def execute_instruction(instruction):
-        operation = string_decode(hex(instruction))
+        operation = decode(hex(instruction))
         operation(self, instruction)
 
-    # def emulate_cycle(self):
-    #     # Fetch Opcode (next two bytes from memory)
-    #     opcode = self.memory[self.pc] << 8 | self.memory[self.pc + 1]
-    #     # Decode Opcode
-    #     opcode = hex(opcode)
-    #     # Execute Opcode
-    #     opcodes[opcode](self)
-    #     # Update Timers
-    #     self.pc += 2
+    def emulate_cycle(self):
+        # Fetch Opcode (next two bytes from memory)
+        instruction = self.memory[self.pc] << 8 | self.memory[self.pc + 1]
+        # Decode Opcode
+        opcode = decode(instruction)
+        # Execute Opcode
+        opcode(instruction)
+        # Update Timers
+        self.pc += 2
 
     def set_keys(self):
         self.key = 0
