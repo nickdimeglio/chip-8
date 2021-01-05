@@ -492,7 +492,14 @@ class TestOpCodes(unittest.TestCase):
 
 
     def test_opFX55(self):
-        True
+        """Store registers V0 through Vx in memory starting at location I"""
+        chip = Chip8()
+        chip.v_registers[0] = 0xF
+        chip.v_registers[0xB] = 0xA
+        opFX55(chip, 0xFB55)
+        self.assertEqual(chip.memory[:0xC], [0xF, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                             0, 0xA])
+
 
     def test_opFX65(self):
         True

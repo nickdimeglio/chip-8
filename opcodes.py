@@ -409,7 +409,10 @@ def opFX33(chip8, instruction):
 
 
 def opFX55(chip8, instruction):
-    return 0
+    """Store registers V0 through Vx in memory starting at location I."""
+    X = nibble2(instruction)
+    I = chip8.address
+    chip8.memory[I:(I+X+1)] = chip8.v_registers[:(X+1)]
 
 
 def opFX65(chip, instruction):
