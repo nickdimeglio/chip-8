@@ -492,7 +492,8 @@ class TestOpCodes(unittest.TestCase):
 
 
     def test_opFX55(self):
-        """Store registers V0 through Vx in memory starting at location I"""
+        """Store registers V0 through Vx in memory starting at current
+           memory address"""
         chip = Chip8()
         chip.v_registers[0] = 0xF
         chip.v_registers[0xB] = 0xA
@@ -502,8 +503,15 @@ class TestOpCodes(unittest.TestCase):
 
 
     def test_opFX65(self):
-        True
-
+        """Fill registers V0 to Vx inclusive with the values stored in memory
+        starting at current memory address"""
+        chip = Chip8()
+        chip.address = 0x200
+        chip.memory[0x200] = 0xF
+        chip.memory[0x20B] = 0xA
+        opFX65(chip, 0xFB65)
+        self.assertEqual(chip.v_registers[:0xC],
+                                         [0xF, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0xA])
 
 if __name__ == '__main__':
     unittest.main()
