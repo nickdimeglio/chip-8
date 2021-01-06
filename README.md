@@ -1,4 +1,4 @@
-This project consists of a CHIP-8 emulator implemented in Python. CHIP-8 is a
+This project consists of a CHIP-8 interpreter implemented in Python. CHIP-8 is a
 platform that can run old school games like Pac-Man and Pong. It has 4K memory
 consisting of main memory, 16 registers, a stack, two timers, input/output with
 graphics and sound, and a font set. Programs written for CHIP-8 implementation
