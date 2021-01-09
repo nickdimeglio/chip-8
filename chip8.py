@@ -17,8 +17,6 @@ class Chip8:
         # CPU Registers
         self.v_registers = [0] * 16
         self.draw_flag = 0
-        # Index Register
-
 
         # Screen Representation
         self.gfx = [0] * (64 * 32)
@@ -32,8 +30,7 @@ class Chip8:
            Anytime you perform a jump or call a subroutine, store the program counter
            in the stack before proceeding."""
         # Stack Pointer
-
-
+        self.sp = 0
         self.key = [0] * 16
 
     def load_game(self, game):
