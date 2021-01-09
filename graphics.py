@@ -17,7 +17,7 @@ for index, pixel in enumerate(home_screen):
             home_screen[index] = 1
 
 
-def setup_graphics():
+def setup_graphics(chip):
     window = Tk()
     window.title("ESPRESSO")
     window.geometry(str(int(SCREEN_WIDTH)) + "x" + str(int(SCREEN_HEIGHT)))
@@ -26,7 +26,7 @@ def setup_graphics():
     canvas.configure(bg='blanched almond')
     canvas.pack(fill="both", expand=True)
 
-    for index, pixel in enumerate(home_screen):
+    for index, pixel in enumerate(chip.gfx):
         if pixel == 1:
             column = index%64
             row = floor(index/64)

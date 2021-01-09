@@ -3,7 +3,7 @@ from graphics import font_set
 """The Chip8 interpreter"""
 
 
-class Chip8:
+class Chip8CPU:
     def __init__(self):
         self.pc = 0x200     # Program counter, starts at 0x200
         self.opcode = 0     # Opcode, reset to 0
@@ -20,6 +20,7 @@ class Chip8:
 
         # Screen Representation
         self.gfx = [0] * (64 * 32)
+        
         # Timer registers
         self.delay_timer = -1
         self.sound_timer = -1

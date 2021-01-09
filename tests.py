@@ -7,8 +7,8 @@ from opcodes import *
 class TestChip8(unittest.TestCase):
 
     def test_instantiation(self):
-        chip = Chip8()
-        self.assertTrue(isinstance(chip, Chip8))
+        chip = Chip8CPU()
+        self.assertTrue(isinstance(chip, Chip8CPU))
 
 
 class TestDecoding(unittest.TestCase):
@@ -122,7 +122,7 @@ class TestOpCodes(unittest.TestCase):
     def test_op00E0(self):
 
         """Clears the screen"""
-        chip = Chip8()
+        chip = Chip8CPU()
         chip.gfx[10] = 1
         chip.gfx[892] = 1
         self.assertEqual(chip.gfx[10], 1)
@@ -135,7 +135,7 @@ class TestOpCodes(unittest.TestCase):
 
     def test_op00EE(self):
         """Returns from a subroutine"""
-        chip = Chip8()
+        chip = Chip8CPU()
         # Program is currently at 0x600
         chip.pc = 0x600
         # Call subroutine at 0x400
@@ -146,13 +146,13 @@ class TestOpCodes(unittest.TestCase):
 
     def test_op1NNN(self):
         """Jumps to address NNN"""
-        chip = Chip8()
+        chip = Chip8CPU()
         op1NNN(chip, 0x1F90)
         self.assertEqual(chip.pc, 0xF90)
 
     def test_op2NNN(self):
         """Calls subroutine at NNN"""
-        chip = Chip8()
+        chip = Chip8CPU()
         chip.pc = 0x301
         op2NNN(chip, 0x2ABC)
         self.assertEqual(chip.pc, 0xABC)
@@ -163,7 +163,7 @@ class TestOpCodes(unittest.TestCase):
     def test_op3XNN(self):
         """Skips the next instruction if VX equals NN. Usually the next instruction
         is a jump to skip a code block"""
-        chip = Chip8()
+        chip = Chip8CPU()
         chip.pc = 0x400
         chip.v_registers[0xA] = 0xFF
 
@@ -178,7 +178,7 @@ class TestOpCodes(unittest.TestCase):
     def test_op4XNN(self):
         """Skips the next instruction if VX doesn't equal NN. Usually the
         next instruction is a jump to skip a code block"""
-        chip = Chip8()
+        chip = Chip8CPU()
         chip.pc = 0x400
         chip.v_registers[0x1] = 0xDD
 
@@ -192,7 +192,7 @@ class TestOpCodes(unittest.TestCase):
 
     def test_op5XY0(self):
         """Skips the next instruction if VX == VY"""
-        chip = Chip8()
+        chip = Chip8CPU()
         chip.v_registers[0x0] = 0x5
         chip.v_registers[0x1] = 0x5
         chip.v_registers[0x2] = 0xF
@@ -207,13 +207,13 @@ class TestOpCodes(unittest.TestCase):
 
     def test_op6XNN(self):
         """Set VX = NN"""
-        chip = Chip8()
+        chip = Chip8CPU()
         op6XNN(chip, 0x6B88)
         self.assertEqual(chip.v_registers[0xB], 0x88)
 
     def test_op7XNN(self):
         """Sets VX += NN"""
-        chip = Chip8()
+        chip = Chip8CPU()
 
         # Normal Case
         chip.v_registers[0xF] = 0xA
@@ -227,7 +227,7 @@ class TestOpCodes(unittest.TestCase):
 
     def test_op8XY0(self):
         """Sets VX = VY"""
-        chip = Chip8()
+        chip = Chip8CPU()
         chip.v_registers = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0xFF,
                             0xAA]
         op8XY0(chip, 0x8EF0)
@@ -235,7 +235,7 @@ class TestOpCodes(unittest.TestCase):
 
     def test_op8XY1(self):
         """Sets VX = (VX or VY)"""
-        chip = Chip8()
+        chip = Chip8CPU()
         chip.v_registers[0x0] = 0b10001001
         chip.v_registers[0x1] = 0b00000010
         op8XY1(chip, 0x8011)
@@ -243,7 +243,7 @@ class TestOpCodes(unittest.TestCase):
 
     def test_op8XY2(self):
         """Sets VX = (VX and VY)"""
-        chip = Chip8()
+        chip = Chip8CPU()
         chip.v_registers[0x0] = 0b10001001
         chip.v_registers[0x1] = 0b00000010
         op8XY2(chip, 0x8011)
@@ -251,7 +251,7 @@ class TestOpCodes(unittest.TestCase):
 
     def test_op8XY3(self):
         """Sets VX = (VX xor VY)"""
-        chip = Chip8()
+        chip = Chip8CPU()
         chip.v_registers[0x0] = 0b11010101
         chip.v_registers[0x1] = 0b11101010
         op8XY3(chip, 0x8011)
@@ -259,7 +259,7 @@ class TestOpCodes(unittest.TestCase):
 
     def test_op8XY4(self):
         """Sets VX += VY"""
-        chip = Chip8()
+        chip = Chip8CPU()
 
         # Normal Case
         chip.v_registers[0xA] = 0xF0
@@ -277,7 +277,7 @@ class TestOpCodes(unittest.TestCase):
 
     def test_op8XY5(self):
         """Sets VX -= VY"""
-        chip = Chip8()
+        chip = Chip8CPU()
 
         # Test no carry
         chip.v_registers[0x1] = 0xFF
@@ -295,7 +295,7 @@ class TestOpCodes(unittest.TestCase):
 
     def test_op8XY6(self):
         """Stores LSB of VX in VF then shifts VX to the right by 1"""
-        chip = Chip8()
+        chip = Chip8CPU()
         chip.v_registers[0x5] = 0b10101011
 
         self.assertEqual(chip.v_registers[0xF], 0)
@@ -306,7 +306,7 @@ class TestOpCodes(unittest.TestCase):
         self.assertEqual(chip.v_registers[0x5], 0b1010101)
 
     def test_op8XY7(self):
-        chip = Chip8()
+        chip = Chip8CPU()
 
         # Test no carry
         chip.v_registers[0x1] = 0x5
@@ -330,7 +330,7 @@ class TestOpCodes(unittest.TestCase):
 
     def test_op8XYE(self):
         """Stores MSB of VX in VF then shifts VX to the left by 1"""
-        chip = Chip8()
+        chip = Chip8CPU()
         chip.v_registers[0xC] = 0b10101010
 
         self.assertEqual(chip.v_registers[0xF], 0)
@@ -341,7 +341,7 @@ class TestOpCodes(unittest.TestCase):
         self.assertEqual(chip.v_registers[0xF], 0x1)
 
     def test_op9XY0(self):
-        chip = Chip8()
+        chip = Chip8CPU()
         chip.pc = 0x400
 
         # Test equal registers
@@ -360,14 +360,14 @@ class TestOpCodes(unittest.TestCase):
 
     def test_opANNN(self):
         """"Sets address = NNN"""
-        chip = Chip8()
+        chip = Chip8CPU()
         self.assertEqual(chip.address, 0x0)
         opANNN(chip, 0xA5FF)
         self.assertEqual(chip.address, 0x5FF)
 
     def test_opBNNN(self):
         """Jumps to instruction V0 + NNN"""
-        chip = Chip8()
+        chip = Chip8CPU()
         chip.v_registers[0] = 0x3FE
         self.assertEqual(chip.pc, 0x200)
 
@@ -381,7 +381,7 @@ class TestOpCodes(unittest.TestCase):
 
     def test_opDXYN(self):
         """Draws a sprite on the screen"""
-        chip = Chip8()
+        chip = Chip8CPU()
         chip.memory[0x200:0x20B] = [0xFF] * 0xC
         chip.memory[0x204:0x208] = [0x0] * 0x4
         chip.address = 0x200
@@ -405,7 +405,7 @@ class TestOpCodes(unittest.TestCase):
     def test_opEX9E(self):
         """Skips next instruction if the key
         with value VX is pressed"""
-        chip = Chip8()
+        chip = Chip8CPU()
         chip.key[0xA] = 1
         chip.v_registers[0xA] = 0xA
 
@@ -418,7 +418,7 @@ class TestOpCodes(unittest.TestCase):
     def test_opEXA1(self):
         """Skips next instruction if the key
         with value VX is not pressed"""
-        chip = Chip8()
+        chip = Chip8CPU()
         chip.key[0xA] = 1
         chip.v_registers[0xA] = 0xA
         opEXA1(chip, 0xEAA1)
@@ -429,7 +429,7 @@ class TestOpCodes(unittest.TestCase):
 
     def test_opFX07(self):
         """Sets VX to the value of the delay timer"""
-        chip = Chip8()
+        chip = Chip8CPU()
         chip.delay_timer = 0x300
 
         self.assertEqual(chip.v_registers[0xE], 0)
@@ -441,7 +441,7 @@ class TestOpCodes(unittest.TestCase):
 
     def test_opFX15(self):
         """Set delay timer to VX"""
-        chip = Chip8()
+        chip = Chip8CPU()
         self.assertEqual(chip.delay_timer, -1)
         chip.v_registers[0x9] = 0xBB
         opFX15(chip, 0xF915)
@@ -450,7 +450,7 @@ class TestOpCodes(unittest.TestCase):
 
     def test_opFX18(self):
         """Set sound timer to VX"""
-        chip = Chip8()
+        chip = Chip8CPU()
         self.assertEqual(chip.sound_timer, -1)
         chip.v_registers[0x9] = 0xBB
         opFX18(chip, 0xF915)
@@ -459,7 +459,7 @@ class TestOpCodes(unittest.TestCase):
 
     def test_opFX1E(self):
         """Set address to address + VX"""
-        chip = Chip8()
+        chip = Chip8CPU()
         chip.address = 0x4
         self.assertEqual(chip.address, 0x4)
         chip.v_registers[0x7] = 0xFAB
@@ -469,7 +469,7 @@ class TestOpCodes(unittest.TestCase):
 
     def test_opFX29(self):
         """Set address to the location of sprite for digit VX"""
-        chip = Chip8()
+        chip = Chip8CPU()
         chip.v_registers[0x1] = 0xB
         chip.v_registers[0x2] = 0x5
         opFX29(chip, 0xF129)
@@ -481,7 +481,7 @@ class TestOpCodes(unittest.TestCase):
     def test_opFX33(self):
        """Take decimal value of VX, store hundreds in memory[I], tens in I+1,
        ones in I+2"""
-       chip = Chip8()
+       chip = Chip8CPU()
        chip.v_registers[0x3] = 0xF1
        chip.address = 0x200
        self.assertEqual(chip.address, 0x200)
@@ -494,7 +494,7 @@ class TestOpCodes(unittest.TestCase):
     def test_opFX55(self):
         """Store registers V0 through Vx in memory starting at current
            memory address"""
-        chip = Chip8()
+        chip = Chip8CPU()
         chip.v_registers[0] = 0xF
         chip.v_registers[0xB] = 0xA
         opFX55(chip, 0xFB55)
@@ -505,7 +505,7 @@ class TestOpCodes(unittest.TestCase):
     def test_opFX65(self):
         """Fill registers V0 to Vx inclusive with the values stored in memory
         starting at current memory address"""
-        chip = Chip8()
+        chip = Chip8CPU()
         chip.address = 0x200
         chip.memory[0x200] = 0xF
         chip.memory[0x20B] = 0xA
