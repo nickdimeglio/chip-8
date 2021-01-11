@@ -30,24 +30,24 @@ def emulate(chip, screen, canvas):
 
     draw_graphics(home_screen, canvas)
 
-    # while True:
-    #     """TODO:
-    #         Besides executing opcodes, the Chip 8 also has two timers
-    #         you will need to implement. As mentioned above, both timers
-    #         count down to zero if they have been set to a value larger
-    #         than zero. Since these timers count down at 60 Hz, you might
-    #         want to implement something that slows down your emulation
-    #         cycle (Execute 60 opcodes in one second)"""
-    #     # Emulate one cycle
-    #     chip8.emulate_cycle()
-    #
-    #     # If draw flag is set, update the screen
-    #     if chip8.draw_flag:
-    #         draw_graphics(chip8.gfx, canvas)
-    #         screen.update()
-    #
-    #     # Store key press state (Press and Release)
-    #     chip8.set_keys
+    while True:
+        """TODO:
+            Besides executing opcodes, the Chip 8 also has two timers
+            you will need to implement. As mentioned above, both timers
+            count down to zero if they have been set to a value larger
+            than zero. Since these timers count down at 60 Hz, you might
+            want to implement something that slows down your emulation
+            cycle (Execute 60 opcodes in one second)"""
+        # Emulate one cycle
+        chip8.emulate_cycle()
+
+        # If draw flag is set, update the screen
+        if chip8.draw_flag:
+            draw_graphics(chip8.gfx, canvas)
+            screen.update()
+
+        # Store key press state (Press and Release)
+        chip8.set_keys
 
 if __name__ == '__main__':
     initialize_emulator()
