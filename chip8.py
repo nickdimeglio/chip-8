@@ -1,4 +1,5 @@
 from graphics import font_set
+from opcodes import *
 
 """The Chip8 interpreter"""
 
@@ -59,7 +60,6 @@ class Chip8CPU:
 
 
     # Functions for Testing
-
     def printscreen(self):
         print("\n")
         row = 0
