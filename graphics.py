@@ -1,89 +1,47 @@
-# PySDL2 Testing
-import sys
-import sdl2
-import sdl2.ext
+from tkinter import Tk, Canvas, PhotoImage, mainloop
+from math import floor
 
-SCREEN_WIDTH = 1280
-SCREEN_HEIGHT = 640
-PIXEL_WIDTH = SCREEN_WIDTH / 64
-PIXEL_HEIGHT = SCREEN_HEIGHT / 32
+class Chip8Graphics:
+    def __init__(self):
+        self.screen_width = 1280
+        self.screen_height = 640
+        self.pixel_width = self.screen_width / 64
+        self.pixel_height = self.screen_height / 32
 
-WHITE = sdl2.ext.Color(255, 255, 255)
+    def display(self, pixels, canvas):
+        canvas.delete("all")
+        for index, pixel in enumerate(pixels):
+            if pixel == 1:
+                column = index%64
+                row = floor(index/64)
+                canvas.create_rectangle(
+                self.pixel_width*column, self.pixel_height*row, self.pixel_width*(column+1),
+                self.pixel_height*(row+1),fill="dark slate grey", outline='black', width=0)
 
-class SoftwareRenderer(sdl2.ext.SoftwareSpriteRenderSystem):
-        def __init__(self, window):
-            super(SoftwareRenderer, self).__init__(window)
+    def setup_graphics(self, chip):
+        window = Tk()
+        window.title("ESPRESSO")
+        window.geometry(str(int(self.screen_width)) + "x" + str(int(self.screen_height)))
+    
+        canvas = Canvas(window)
+        canvas.configure(bg='blanched almond')
+        canvas.pack(fill="both", expand=True)
+    
+        for index, pixel in enumerate(chip.gfx):
+            column = index%64
+            row = floor(index/64)
+            if 4 <= row <= 27 and 8 <= column <= 55:
+                if row in [4, 5, 6, 7, 24, 25, 26, 27] or column in [8, 9, 10, 11, 30, 31, 32, 33, 52, 53, 54, 55]:
+                    chip.gfx[index] = 1
+    
+        self.display(chip.gfx, canvas)
+        return window, canvas
 
-        def render(self, components):
-            sdl2.ext.fill(self.surface, sdl2.ext.Color(0, 0, 0))
-            super(SoftwareRenderer, self).render(components)
+    def setup_input(self):
+        pass
 
-
-class Player(sdl2.ext.Entity):
-        def __init__(self, world, sprite, posx=0, posy=0):
-            self.sprite = sprite
-            self.sprite.position = posx, posy
-
-
-class Platform:
-    def __init__(title, width, height, texture_width, texture_height):
-        sdl2.ext.init()
-        window = sdl2.ext.Window("ESPRESSO", size=(SCREEN_WIDTH, SCREEN_HEIGHT))
-        window.show()
-        renderer = sdl2.ext.Renderer(window)
-        texture = sdl2.ext.Texture(renderer, 
-        
-
-
-def run():
-    sdl2.ext.init()
-    window = sdl2.ext.Window("ESPRESSO", size=(SCREEN_WIDTH, SCREEN_HEIGHT))
-    window.show()
-
-    # get window's surface to draw on
-    windowsurface = window.get_surface()
-
-    # world = sdl2.ext.World()
-    # spriterenderer = SoftwareRenderer(window)
-    # world.add_system(spriterenderer)
-
-
-    factory = sdl2.ext.SpriteFactory(sdl2.ext.SOFTWARE)
-    sp_paddle1 = factory.from_color(WHITE, size=(20, 100))
-    sp_paddle2 = factory.from_color(WHITE, size=(20, 100))
-
-    player1 = Player(world, sp_paddle1, 0, 250)
-    player2 = Player(world, sp_paddle2, 890, 250)
-
-    running = True
-    while running:
-        events = sdl2.ext.get_events()
-        for event in events:
-            if event.type == sdl2.SDL_QUIT:
-                running = False
-                break
-            if event.type == sdl2.SDL_KEYDOWN:
-                if event.key.keysym.sym == sdl2.SDKL_UP:
-                    pass
-            elif event.type == sdl2.SDL_KEYUP:
-                if event.key.keysym.sym in (sdl2.SDLK_UP, sdl2.SDKL_DOWN):
-                    pass
-            sdl2.SDL_Delay(10)
-            world.process()
-
-if __name__ == "__main__":
-    sys.exit(run())
-
-def setup_graphics(chip):
-    pass
-
-def draw_graphics(pixels, canvas):
-    pass
-
-
-def setup_input():
-    pass
-
+if __name__ == '__main__':
+    mainloop()
 
 """Font Set"""
 font_set = [
