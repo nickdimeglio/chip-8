@@ -1,6 +1,6 @@
 from cpu import Chip8CPU
 from graphics import Chip8Graphics
-import sys
+import sys, time
 
 class Interpreter:
     def __init__(self, rom):
@@ -8,12 +8,10 @@ class Interpreter:
         self.chip.load_game(rom)
 
         self.gfx = Chip8Graphics()
-        self.screen, self.canvas = self.gfx.setup_graphics(self.chip)
-        self.gfx.setup_input()
+        self.screen, self.canvas = self.gfx.setup_io(self.chip)
 
     def run(self):
         self.screen.mainloop()
-
         emulator_running = True
 
         while emulator_running:
