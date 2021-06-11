@@ -6,48 +6,66 @@ class Chip8Graphics:
         self.screen_height = 640
         self.pixel_width = self.screen_width / 64
         self.pixel_height = self.screen_height / 32
-        self.bg_color 'blanched almond'
+        self.bg_color = 'blanched almond'
         self.pixel_color = 'dark slate grey'
         self.outline_color = 'black'
 
-    def display(self, pixels):
+    def display(self, screen):
         self.canvas.delete("all")
-        for index, pixel in enumerate(pixels):
+        for index, pixel in enumerate(screen):
             if pixel == 1:
                 column = index%64
-                row = floor(index/64)
+                row = index//64
                 self.canvas.create_rectangle(
                 self.pixel_width*column, self.pixel_height*row, self.pixel_width*(column+1),
                 self.pixel_height*(row+1),fill=self.bg_color, outline=self.outline_color, width=0)
 
-    def setup_io(self, chip):
-        window = Tk()
-        window.title("ESPRESSO")
-        window.geometry(str(int(self.screen_width)) + "x" + str(int(self.screen_height)))
+    def setup_graphics(self, screen):
+        self.window = Tk()
+        self.window.title("ESPRESSO")
+        self.window.geometry(str(int(self.screen_width)) + "x" + str(int(self.screen_height)))
+        self.canvas = Canvas(self.window)
+        self.canvas.configure(bg=self.bg_color)
+        self.canvas.pack(fill="both", expand=True)
     
-        canvas = Canvas(self.window)
-        canvas.configure(bg=self.bg_color)
-        canvas.pack(fill="both", expand=True)
-    
-        for index, pixel in enumerate(chip.gfx):
+        for index, pixel in enumerate(screen):
             column = index%64
             row = index//64
             if 4 <= row <= 27 and 8 <= column <= 55:
                 if row in [4, 5, 6, 7, 24, 25, 26, 27] or column in [8, 9, 10, 11, 30, 31, 32, 33, 52, 53, 54, 55]:
-                    chip.gfx[index] = 1
+                    screen[index] = 1
     
-        self.display(chip.gfx, canvas)
+        self.display(screen)
+        return self.window
 
+    def key_down(self, event, keyboard):
+        key = event.keysym.upper()
+        if key in key_mapping:
+            mapping = key_mapping[key]
+            keyboard[mapping] = 1
+            
+    def key_up(self, event, keyboard):
+        key = event.keysym.upper()
+        if key in key_mapping:
+            mapping = key_mapping[key]
+            keyboard[mapping] = 0
 
+    def setup_input(self, keyboard):
         # Setup Input
-
-        return window, canvas
-
-    def setup_input(self):
-        pass
+        self.window.bind_all('<KeyPress>', lambda event: self.key_down(event, keyboard))
+        self.window.bind_all('<KeyRelease>', lambda event: self.key_up(event, keyboard))
 
 if __name__ == '__main__':
     mainloop()
+
+
+"""Key Mapping"""
+key_mapping = {
+'1': 0x1, '2': 0x2, '3': 0x3, '4': 0xC,
+'Q': 0x4, 'W': 0x5, 'E': 0x6, 'R': 0xD,
+'A': 0x7, 'S': 0x8, 'D': 0x9, 'F': 0xE,
+'Z': 0xA, 'X': 0x0, 'C': 0xB, 'V': 0xF,
+}
 
 """Font Set"""
 font_set = [

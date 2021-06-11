@@ -16,7 +16,7 @@ class Chip8CPU:
         self.draw_flag = 0
 
         # Screen Representation
-        self.gfx = [0] * (64 * 32)
+        self.screen = [0] * (64 * 32)
         
         # Timer registers
         self.delay_timer = -1
@@ -27,7 +27,7 @@ class Chip8CPU:
 
         # Stack Pointer
         self.sp = 0
-        self.key = [0] * 16
+        self.keyboard = [0] * 16
 
     def load_game(self, rom):
         """
@@ -44,17 +44,23 @@ class Chip8CPU:
         operation(self, instruction)
 
     def emulate_cycle(self):
-        # Fetch Opcode (next two bytes from memory)
+        # Fetch
         instruction = self.memory[self.pc] << 8 | self.memory[self.pc + 1]
-        # Decode Opcode
+
+        # Decode
         opcode = decode(instruction)
-        # Execute Opcode
-        execute(instruction)
-        # Update Timers
+
+        # Execute
+        opcode(self, instruction)
+
+        # Update Program Counter 
         self.pc += 2
 
-    def set_keys(self):
-        self.key = 0
+        # Update Timers
+        if chip.delay_timer > 0:
+            chip.delay_timer -= 1
+        if chip.sound_timer > 0:
+            chip.sound_timer -= 1
 
     # Functions for Testing
     def printscreen(self):

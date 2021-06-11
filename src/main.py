@@ -7,27 +7,23 @@ class Interpreter:
         self.chip = Chip8CPU()
         self.chip.load_game(rom)
 
-        self.gfx = Chip8Graphics()
-        self.screen, self.canvas = self.gfx.setup_io(self.chip)
+    def loop(self):
+        self.chip.emulate_cycle()
+        self.chip.sound_timer.beep()
+
+        if self.chip.draw_flag:
+           self.gfx.display() 
+                
+        self.window.after(1 / 60 * 1000, loop) 
 
     def run(self):
-        self.screen.mainloop()
-        emulator_running = True
+        graphics = Chip8Graphics()
+        self.window = graphics.setup_graphics(self.chip.screen)
+        graphics.setup_input(self.chip.keyboard)
 
-        while emulator_running:
-            time.sleep(1/60)
-            self.chip.handle_keys()
-            self.chip.sound_timer.beep()
-            self.chip.emulate_cycle()
+        self.loop()
+        self.window.mainloop()
 
-            if self.chip.draw_flag:
-               self.gfx.display() 
-                
-            # Update timers
-            if chip.delay_timer > 0:
-                chip.delay_timer -= 1
-            if chip.sound_timer > 0:
-                chip.sound_timer -= 1
 
 if __name__ == '__main__':  
     interpreter = Interpreter(sys.argv[1])

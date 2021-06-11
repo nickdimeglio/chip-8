@@ -3,7 +3,6 @@ import random
 
 # Code for decoding instructions into opcodes
 
-
 def decode(instruction):
     """Given an instruction, return the function for executing its
     corresponding opcode"""
@@ -422,3 +421,4 @@ def opFX65(chip8, instruction):
     X = nibble2(instruction)
     I = chip8.address
     chip8.v_registers[0:(X+1)] = chip8.memory[I:(I+X+1)]
+
