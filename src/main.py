@@ -8,18 +8,17 @@ class Interpreter:
         self.chip.load_game(rom)
 
     def loop(self):
-        self.chip.emulate_cycle()
-        self.chip.sound_timer.beep()
-
+        # self.chip.emulate_cycle()
+        print(self.chip.keyboard)
         if self.chip.draw_flag:
            self.gfx.display() 
                 
-        self.window.after(1 / 60 * 1000, loop) 
+        self.window.after(16, self.loop)
 
     def run(self):
         graphics = Chip8Graphics()
         self.window = graphics.setup_graphics(self.chip.screen)
-        graphics.setup_input(self.chip.keyboard)
+        graphics.setup_input(self.chip)
 
         self.loop()
         self.window.mainloop()

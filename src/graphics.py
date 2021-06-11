@@ -38,26 +38,22 @@ class Chip8Graphics:
         self.display(screen)
         return self.window
 
-    def key_down(self, event, keyboard):
+    def key_down(self, event, chip):
         key = event.keysym.upper()
         if key in key_mapping:
             mapping = key_mapping[key]
-            keyboard[mapping] = 1
+            chip.keyboard[mapping] = 1
             
-    def key_up(self, event, keyboard):
+    def key_up(self, event, chip):
         key = event.keysym.upper()
         if key in key_mapping:
             mapping = key_mapping[key]
-            keyboard[mapping] = 0
+            chip.keyboard[mapping] = 0
 
-    def setup_input(self, keyboard):
+    def setup_input(self, chip):
         # Setup Input
-        self.window.bind_all('<KeyPress>', lambda event: self.key_down(event, keyboard))
-        self.window.bind_all('<KeyRelease>', lambda event: self.key_up(event, keyboard))
-
-if __name__ == '__main__':
-    mainloop()
-
+        self.window.bind_all('<KeyPress>', lambda event: self.key_down(event, chip))
+        self.window.bind_all('<KeyRelease>', lambda event: self.key_up(event, chip))
 
 """Key Mapping"""
 key_mapping = {
@@ -86,3 +82,4 @@ font_set = [
 0xF0, 0x80, 0xF0, 0x80, 0xF0, # E (70)
 0xF0, 0x80, 0xF0, 0x80, 0x80, # F (75)
 ]
+

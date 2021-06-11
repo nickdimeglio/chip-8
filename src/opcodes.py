@@ -301,6 +301,10 @@ def opDXYN(chip8, instruction):
     N = nibble4(instruction)
     i = chip8.address
 
+    """TEsting"""
+    print("DRAWING!" + "VX: " + str(VX) + ", VY: " + str(VY) + ", N: " + str(N) + ", i: " + str(i))
+    """Testing"""
+
     # Starting at i, store N bytes from memory as a binary string
     sprite = 0b0
     for byte in chip8.memory[i:i+N]:
@@ -323,7 +327,7 @@ def opDXYN(chip8, instruction):
 
     for address in draw_area:
         canvas <<= 1
-        canvas |= chip8.gfx[address]
+        canvas |= chip8.screen[address]
 
     # XOR the sprite across the current state of the drawing area
     drawing = canvas ^ sprite
@@ -333,21 +337,21 @@ def opDXYN(chip8, instruction):
     chip8.v_registers[0xF] = 0
 
     for address in reversed(draw_area):
-        if chip8.gfx[address] == 1 and (drawing & 0b1) == 0:
+        if chip8.screen[address] == 1 and (drawing & 0b1) == 0:
             chip8.v_registers[0xF] = 1
-        chip8.gfx[address] = drawing & 0b1
+        chip8.screen[address] = drawing & 0b1
         drawing >>= 1
 
 
 def opEX9E(chip8, instruction):
     VX = chip8.v_registers[nibble2(instruction)]
-    if chip8.key[VX] == 1:
+    if chip8.keyboard[VX] == 1:
         chip8.pc += 2
 
 
 def opEXA1(chip8, instruction):
     VX = chip8.v_registers[nibble2(instruction)]
-    if chip8.key[VX] == 0:
+    if chip8.keyboard[VX] == 0:
         chip8.pc += 2
 
 
@@ -359,7 +363,7 @@ def opFX07(chip8, instruction):
 
 def opFX0A(chip8, instruction):
     """Pause program until a key is pressed"""
-    while all(key == 0 for key in chip8.key):
+    while all(key == 0 for key in chip8.keyboard):
         continue
 
 

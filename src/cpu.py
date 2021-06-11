@@ -1,6 +1,7 @@
 from graphics import font_set
 from opcodes import *
 
+
 class Chip8CPU:
     def __init__(self):
         self.pc = 0x200     # Program counter, starts at 0x200
@@ -30,14 +31,14 @@ class Chip8CPU:
         self.keyboard = [0] * 16
 
     def load_game(self, rom):
-        """
-        TODO: Implement load_game
-        Read the file provided on the command line and store the ROM
-        into memory starting at 0x200
-        """
-        # With open (rom) as ...
-        # Read lines and store ROM in memory starting at 0x200
-        self.pc = 0x200
+        """Read the file provided on the command line and store the ROM
+        into memory starting at 0x200"""
+        f = open(rom, 'rb')
+        d = f.read()
+        i = 0x200
+        for b in d:
+            self.memory[i] = b
+            i += 1
 
     def execute(instruction):
         operation = decode(hex(instruction))
@@ -49,17 +50,18 @@ class Chip8CPU:
 
         # Decode
         opcode = decode(instruction)
-
+        print("\nEmulation Cycle! PC: " + str(self.pc) + ", Opcode: " + opcode.__name__)
         # Execute
         opcode(self, instruction)
+        
 
         # Update Program Counter 
         self.pc += 2
 
         # Update Timers
-        if chip.delay_timer > 0:
+        if self.delay_timer > 0:
             chip.delay_timer -= 1
-        if chip.sound_timer > 0:
+        if self.sound_timer > 0:
             chip.sound_timer -= 1
 
     # Functions for Testing
