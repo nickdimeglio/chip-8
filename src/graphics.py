@@ -1,42 +1,50 @@
 from tkinter import Tk, Canvas, mainloop
+import random
 
 class Chip8Graphics:
-    def __init__(self):
+    def __init__(self, chip):
         self.screen_width = 1280
         self.screen_height = 640
         self.pixel_width = self.screen_width / 64
         self.pixel_height = self.screen_height / 32
+
         self.bg_color = 'blanched almond'
         self.pixel_color = 'dark slate grey'
         self.outline_color = 'black'
+        self.colors = [self.bg_color, self.pixel_color]
+        self.display_pixels = []
 
-    def display(self, screen):
-        self.canvas.delete("all")
-        for index, pixel in enumerate(screen):
-            if pixel == 1:
-                column = index%64
-                row = index//64
-                self.canvas.create_rectangle(
-                self.pixel_width*column, self.pixel_height*row, self.pixel_width*(column+1),
-                self.pixel_height*(row+1),fill=self.bg_color, outline=self.outline_color, width=0)
-
-    def setup_graphics(self, screen):
         self.window = Tk()
         self.window.title("ESPRESSO")
         self.window.geometry(str(int(self.screen_width)) + "x" + str(int(self.screen_height)))
+
+        self.window.bind_all('<KeyPress>', lambda event: self.key_down(event, chip))
+        self.window.bind_all('<KeyRelease>', lambda event: self.key_up(event, chip))
+
         self.canvas = Canvas(self.window)
         self.canvas.configure(bg=self.bg_color)
         self.canvas.pack(fill="both", expand=True)
-    
-        for index, pixel in enumerate(screen):
+
+        for index, pixel in enumerate(chip.screen):
             column = index%64
             row = index//64
-            if 4 <= row <= 27 and 8 <= column <= 55:
-                if row in [4, 5, 6, 7, 24, 25, 26, 27] or column in [8, 9, 10, 11, 30, 31, 32, 33, 52, 53, 54, 55]:
-                    screen[index] = 1
-    
-        self.display(screen)
-        return self.window
+            x1 = self.pixel_width * column
+            y1 = self.pixel_height * row
+            x2 = x1 + self.pixel_width
+            y2 = y1 + self.pixel_height
+            color = self.colors[chip.screen[index]]
+
+            display_pixel = self.canvas.create_rectangle(x1, y1, x2, y2, fill=color, outline=self.outline_color, width=0)
+
+            self.display_pixels.append(display_pixel)
+
+        self.window.update()
+
+    def display(self, screen):
+        for index, pixel in enumerate(screen):
+            self.canvas.itemconfig(self.display_pixels[index], fill=self.colors[pixel])
+
+        self.window.update()
 
     def key_down(self, event, chip):
         key = event.keysym.upper()
@@ -47,13 +55,10 @@ class Chip8Graphics:
     def key_up(self, event, chip):
         key = event.keysym.upper()
         if key in key_mapping:
+            print(chip.keyboard)
             mapping = key_mapping[key]
             chip.keyboard[mapping] = 0
-
-    def setup_input(self, chip):
-        # Setup Input
-        self.window.bind_all('<KeyPress>', lambda event: self.key_down(event, chip))
-        self.window.bind_all('<KeyRelease>', lambda event: self.key_up(event, chip))
+            print(chip.keyboard)
 
 """Key Mapping"""
 key_mapping = {

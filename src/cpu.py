@@ -18,6 +18,8 @@ class Chip8CPU:
 
         # Screen Representation
         self.screen = [0] * (64 * 32)
+        #for i in range(len(self.screen)):
+        #    self.screen[i] = random.randint(0, 1)
         
         # Timer registers
         self.delay_timer = -1
@@ -50,9 +52,10 @@ class Chip8CPU:
 
         # Decode
         opcode = decode(instruction)
-        print("\nEmulation Cycle! PC: " + str(self.pc) + ", Opcode: " + opcode.__name__)
-        # Execute
-        opcode(self, instruction)
+        if opcode:
+            print("\nEmulation Cycle! PC: " + str(self.pc) + ", Opcode: " + opcode.__name__)
+            # Execute
+            opcode(self, instruction)
         
 
         # Update Program Counter 
@@ -70,7 +73,7 @@ class Chip8CPU:
         row = 0
         print(" " + "-" * 64)
         while row <= 31:
-            c_row = self.gfx[(row*64):(row*64+64)]
+            c_row = self.screen[(row*64):(row*64+64)]
             p_row = ""
             for b in c_row:
                 if b == 1:
