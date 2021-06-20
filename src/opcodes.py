@@ -1,4 +1,4 @@
-import random
+import random, time, pygame
 """Functions for decoding and executing opcode"""
 
 # Code for decoding instructions into opcodes
@@ -345,13 +345,13 @@ def opDXYN(chip8, instruction):
 
 def opEX9E(chip8, instruction):
     VX = chip8.v_registers[nibble2(instruction)]
-    if chip8.keyboard[VX] == 1:
+    if chip8.keyboard.keys[VX] == 1:
         chip8.pc += 2
 
 
 def opEXA1(chip8, instruction):
     VX = chip8.v_registers[nibble2(instruction)]
-    if chip8.keyboard[VX] == 0:
+    if chip8.keyboard.keys[VX] == 0:
         chip8.pc += 2
 
 
@@ -363,9 +363,11 @@ def opFX07(chip8, instruction):
 
 def opFX0A(chip8, instruction):
     """Pause program until a key is pressed"""
-    while all(key == 0 for key in chip8.keyboard):
-        continue
-
+    key_pressed = False
+    while not key_pressed:
+        for key in chip8.keyboard.keys:
+            if key:
+                key_pressed = True
 
 def opFX15(chip8, instruction):
     """Set delay timer to VX"""

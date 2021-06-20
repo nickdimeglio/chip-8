@@ -1,74 +1,41 @@
-from tkinter import Tk, Canvas, mainloop
-import random
+import pygame, random
 
 class Chip8Graphics:
-    def __init__(self, chip):
-        self.screen_width = 1280
-        self.screen_height = 640
-        self.pixel_width = self.screen_width / 64
-        self.pixel_height = self.screen_height / 32
-
-        self.bg_color = 'blanched almond'
-        self.pixel_color = 'dark slate grey'
-        self.outline_color = 'black'
+    """Configures and implements input/output for the CHIP8 emulator"""
+    def __init__(self):
+        self.width = 1280
+        self.height = 640
+        self.pixel_width = self.width // 64
+        self.pixel_height = self.height // 32
+        self.bg_color = (12, 15, 10)
+        self.pixel_color = (249, 251, 242) 
         self.colors = [self.bg_color, self.pixel_color]
         self.display_pixels = []
 
-        self.window = Tk()
-        self.window.title("ESPRESSO")
-        self.window.geometry(str(int(self.screen_width)) + "x" + str(int(self.screen_height)))
-
-        self.window.bind_all('<KeyPress>', lambda event: self.key_down(event, chip))
-        self.window.bind_all('<KeyRelease>', lambda event: self.key_up(event, chip))
-
-        self.canvas = Canvas(self.window)
-        self.canvas.configure(bg=self.bg_color)
-        self.canvas.pack(fill="both", expand=True)
-
-        for index, pixel in enumerate(chip.screen):
+    def init_screen(self, screen, chip8_screen):
+        """Initializes the graphical representation of the CHIP8 screen"""
+        for index, pixel in enumerate(chip8_screen):
             column = index%64
             row = index//64
-            x1 = self.pixel_width * column
-            y1 = self.pixel_height * row
-            x2 = x1 + self.pixel_width
-            y2 = y1 + self.pixel_height
-            color = self.colors[chip.screen[index]]
-
-            display_pixel = self.canvas.create_rectangle(x1, y1, x2, y2, fill=color, outline=self.outline_color, width=0)
+            x = self.pixel_width * column
+            y = self.pixel_height * row
+            display_pixel = pygame.draw.rect(screen, self.colors[0], 
+                pygame.Rect(x, y, self.pixel_width, self.pixel_height))
 
             self.display_pixels.append(display_pixel)
 
-        self.window.update()
+    def draw_screen(self, screen, chip8_screen):
+        """Draws the current CHIP8 pixels to the screen"""
+        for index, color in enumerate(chip8_screen):
+            dp = self.display_pixels[index]
+            screen.fill(color, dp)            
 
-    def display(self, screen):
-        for index, pixel in enumerate(screen):
-            self.canvas.itemconfig(self.display_pixels[index], fill=self.colors[pixel])
+    def random_screen(self, screen):
+        """Draws the pixels on the screen at random"""
+        for dp in self.display_pixels:
+            color = self.colors[random.randrange(2)]
+            screen.fill(color, dp)
 
-        self.window.update()
-
-    def key_down(self, event, chip):
-        key = event.keysym.upper()
-        if key in key_mapping:
-            mapping = key_mapping[key]
-            chip.keyboard[mapping] = 1
-            
-    def key_up(self, event, chip):
-        key = event.keysym.upper()
-        if key in key_mapping:
-            print(chip.keyboard)
-            mapping = key_mapping[key]
-            chip.keyboard[mapping] = 0
-            print(chip.keyboard)
-
-"""Key Mapping"""
-key_mapping = {
-'1': 0x1, '2': 0x2, '3': 0x3, '4': 0xC,
-'Q': 0x4, 'W': 0x5, 'E': 0x6, 'R': 0xD,
-'A': 0x7, 'S': 0x8, 'D': 0x9, 'F': 0xE,
-'Z': 0xA, 'X': 0x0, 'C': 0xB, 'V': 0xF,
-}
-
-"""Font Set"""
 font_set = [
 0xF0, 0x90, 0x90, 0x90, 0xF0, # 0 (Starts at address 0)
 0x20, 0x60, 0x20, 0x20, 0x70, # 1 (Starts at 5)
@@ -87,4 +54,3 @@ font_set = [
 0xF0, 0x80, 0xF0, 0x80, 0xF0, # E (70)
 0xF0, 0x80, 0xF0, 0x80, 0x80, # F (75)
 ]
-
