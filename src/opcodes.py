@@ -375,22 +375,6 @@ def opFX33(chip8, instruction):
     chip8.memory[i + 1] = (VX % 100) // 10 
     chip8.memory[i + 2] = (VX % 10)
 
- #   value = str(VX)
- #   address = chip8.address
- #   if len(value) == 3:
- #       chip8.memory[address] = int(value[0])
- #       chip8.memory[address + 1] = int(value[1])
- #       chip8.memory[address + 2] = int(value[2])
- #   elif len(value) == 2:
- #       chip8.memory[address] = 0
- #       chip8.memory[address + 1] = value[0]
- #       chip8.memory[address + 2] = value[1]
- #   elif len(value) == 1:
- #       chip8.memory[address] = 0
- #       chip8.memory[address + 1] = 0
- #       chip8.memory[address + 2] = value[0]
-
-
 def opFX55(chip8, instruction):
     """Store registers V0 through Vx in memory starting at current
        memory address"""
