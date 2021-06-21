@@ -90,14 +90,12 @@ def decode(instruction):
 def nibble1(instruction):
     return (instruction & 0xF000) >> 12
 
-
 def nibble2(instruction):
-    return (instruction & 0x0F00) >> 8
-
+    nib = (instruction & 0x0F00) >> 8
+    return nib
 
 def nibble3(instruction):
     return (instruction & 0x00F0) >> 4
-
 
 def nibble4(instruction):
     return instruction & 0x000F
@@ -108,7 +106,7 @@ def nibble4(instruction):
 
 def op00E0(chip8, instruction):
     """Clear the screen"""
-    chip8.gfx = [0] * (64 * 32)
+    chip8.screen = [0] * (64 * 32)
 
 
 def op00EE(chip8, instruction):
@@ -166,7 +164,6 @@ def op6XNN(chip8, instruction):
     NN = instruction & 0x00FF
     chip8.v_registers[X] = NN
 
-
 def op7XNN(chip8, instruction):
     """Sets VX += NN"""
     X = nibble2(instruction)
@@ -176,13 +173,11 @@ def op7XNN(chip8, instruction):
     # Check for wraps
     chip8.v_registers[X] %= 0x100
 
-
 def op8XY0(chip8, instruction):
     """Sets VX = VY"""
     X = nibble2(instruction)
     Y = nibble3(instruction)
     chip8.v_registers[X] = chip8.v_registers[Y]
-
 
 def op8XY1(chip8, instruction):
     """Sets VX = (VX or VY)"""
@@ -190,20 +185,17 @@ def op8XY1(chip8, instruction):
     Y = nibble3(instruction)
     chip8.v_registers[X] = chip8.v_registers[X] | chip8.v_registers[Y]
 
-
 def op8XY2(chip8, instruction):
     """Sets VX = (VX and VY)"""
     X = nibble2(instruction)
     Y = nibble3(instruction)
     chip8.v_registers[X] = chip8.v_registers[X] & chip8.v_registers[Y]
 
-
 def op8XY3(chip8, instruction):
     """Sets VX = (VX xor VY)"""
     X = nibble2(instruction)
     Y = nibble3(instruction)
     chip8.v_registers[X] = chip8.v_registers[X] ^ chip8.v_registers[Y]
-
 
 def op8XY4(chip8, instruction):
     """Sets VX += VY, Sets VF = carry"""
@@ -215,7 +207,6 @@ def op8XY4(chip8, instruction):
     if chip8.v_registers[X] > 0xFF:
         chip8.v_registers[0xF] = 0x1
         chip8.v_registers[X] %= 0x100
-
 
 def op8XY5(chip8, instruction):
     """Sets VX -= VY. Sets VF = NOT borrow"""
@@ -231,13 +222,11 @@ def op8XY5(chip8, instruction):
 
     chip8.v_registers[X] -= chip8.v_registers[Y]
 
-
 def op8XY6(chip8, instruction):
     """Stores LSB of VX in VF then shifts VX to the right by 1"""
     X = nibble2(instruction)
     chip8.v_registers[0xF] = chip8.v_registers[X] & 0x1
     chip8.v_registers[X] = chip8.v_registers[X] >> 1
-
 
 def op8XY7(chip8, instruction):
     """Sets VX = VY - VX. Sets VF = NOT borrow"""
@@ -253,34 +242,30 @@ def op8XY7(chip8, instruction):
 
     chip8.v_registers[X] = (chip8.v_registers[Y] - chip8.v_registers[X])
 
-
 def op8XYE(chip8, instruction):
     """Stores MSB of VX in VF then shifts VX to the left by 1"""
     X = nibble2(instruction)
     chip8.v_registers[0xF] = (chip8.v_registers[X] & 0b10000000) >> 7
     chip8.v_registers[X] = ((chip8.v_registers[X] << 1) & 0xFF)
 
-
 def op9XY0(chip8, instruction):
     """Skips the next instruction if VX != VY"""
     X = nibble2(instruction)
     Y = nibble3(instruction)
-
-    if chip8.v_registers[X] != chip8.v_registers[Y]:
-        chip8.pc +=2
-
+    VX = chip8.v_registers[X]
+    VY = chip8.v_registers[Y]
+    if VX != VY:
+        chip8.pc += 2
 
 def opANNN(chip8, instruction):
     """Sets address = NNN"""
     chip8.address = (0x0FFF & instruction)
-
 
 def opBNNN(chip8, instruction):
     """Jumps to instruction V[0] + NNN"""
     V0 = chip8.v_registers[0x0]
     NNN = 0x0FFF & instruction
     chip8.pc = V0 + NNN
-
 
 def opCXNN(chip8, instruction):
     """Sets VX = NN & a random number"""
@@ -289,7 +274,6 @@ def opCXNN(chip8, instruction):
     NN = 0xFF & instruction
     X = nibble2(instruction)
     chip8.v_registers[X] = NN & rando
-
 
 def opDXYN(chip8, instruction):
     """Take the N-bytes of memory starting at the current index and XOR
@@ -342,24 +326,20 @@ def opDXYN(chip8, instruction):
         chip8.screen[address] = drawing & 0b1
         drawing >>= 1
 
-
 def opEX9E(chip8, instruction):
     VX = chip8.v_registers[nibble2(instruction)]
     if chip8.keyboard.keys[VX] == 1:
         chip8.pc += 2
-
 
 def opEXA1(chip8, instruction):
     VX = chip8.v_registers[nibble2(instruction)]
     if chip8.keyboard.keys[VX] == 0:
         chip8.pc += 2
 
-
 def opFX07(chip8, instruction):
     """Sets VX to the value of the delay timer"""
     X = nibble2(instruction)
     chip8.v_registers[X] = chip8.delay_timer
-
 
 def opFX0A(chip8, instruction):
     """Pause program until a key is pressed"""
@@ -374,43 +354,45 @@ def opFX15(chip8, instruction):
     VX = chip8.v_registers[nibble2(instruction)]
     chip8.delay_timer = VX
 
-
 def opFX18(chip8, instruction):
     """Set sound timer to VX"""
     VX = chip8.v_registers[nibble2(instruction)]
     chip8.sound_timer = VX
-
 
 def opFX1E(chip8, instruction):
     """Set address to address + VX"""
     VX = chip8.v_registers[nibble2(instruction)]
     chip8.address += VX
 
-
 def opFX29(chip8, instruction):
     """Set address to the location of sprite for digit VX"""
     VX = chip8.v_registers[nibble2(instruction)]
     chip8.address = VX * 5
 
-
 def opFX33(chip8, instruction):
     """Take decimal value of VX, store hundreds in memory[I], tens in I+1,
        ones in I+2"""
     VX = chip8.v_registers[nibble2(instruction)]
-    value = str(VX)
-    address = chip8.address
-    if len(value) == 3:
-        chip8.memory[address] = int(value[0])
-        chip8.memory[address + 1] = int(value[1])
-        chip8.memory[address + 2] = int(value[2])
-    elif len(value) == 2:
-        chip8.memory[address] = 0
-        chip8.memory[address + 1] = value[0]
-        chip8.memory[address + 2] = value[1]
-    elif len(value) == 1:
-        chip8.memory[address] = 0
-        chip8.memory[address + 1] = 0
-        chip8.memory[address + 2] = value[0]
+    i = chip8.address
+
+    chip8.memory[i] = VX // 100
+    chip8.memory[i + 1] = (VX % 100) // 10 
+    chip8.memory[i + 2] = (VX % 10)
+
+ #   value = str(VX)
+ #   address = chip8.address
+ #   if len(value) == 3:
+ #       chip8.memory[address] = int(value[0])
+ #       chip8.memory[address + 1] = int(value[1])
+ #       chip8.memory[address + 2] = int(value[2])
+ #   elif len(value) == 2:
+ #       chip8.memory[address] = 0
+ #       chip8.memory[address + 1] = value[0]
+ #       chip8.memory[address + 2] = value[1]
+ #   elif len(value) == 1:
+ #       chip8.memory[address] = 0
+ #       chip8.memory[address + 1] = 0
+ #       chip8.memory[address + 2] = value[0]
 
 
 def opFX55(chip8, instruction):

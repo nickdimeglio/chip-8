@@ -39,7 +39,7 @@ class Chip8CPU:
         self.address = 0    # Address register, reset to 0
         self.sp = 0         # Stack Pointer, reset to 0
 
-        self.memory = [None] * 4096
+        self.memory = [0] * 4096
         self.memory[0:49] = font_set # Font set is stored in 0x000-0x1FF
 
         # CPU Registers
@@ -83,6 +83,7 @@ class Chip8CPU:
             return False
 
         # Decode
+        print(hex(instruction))
         opcode = decode(instruction)
         if opcode:
             print("\nEmulation Cycle! PC: " + str(self.pc) + ", Opcode: " + opcode.__name__)
@@ -91,10 +92,10 @@ class Chip8CPU:
 
         # Update Timers
         if self.delay_timer > 0:
-            chip.delay_timer -= 1
+            self.delay_timer -= 1
         if self.sound_timer > 0:
             # TRIGGER BEEP
-            chip.sound_timer -= 1
+            self.sound_timer -= 1
 
         return True
 

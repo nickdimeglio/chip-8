@@ -26,8 +26,9 @@ class Chip8Graphics:
 
     def draw_screen(self, screen, chip8_screen):
         """Draws the current CHIP8 pixels to the screen"""
-        for index, color in enumerate(chip8_screen):
+        for index, value in enumerate(chip8_screen):
             dp = self.display_pixels[index]
+            color = self.colors[value]
             screen.fill(color, dp)            
 
     def random_screen(self, screen):

@@ -1,6 +1,6 @@
 """Tests for the chip8 implementation"""
 import unittest
-from chip8 import *
+from cpu import *
 from opcodes import *
 
 
@@ -123,15 +123,15 @@ class TestOpCodes(unittest.TestCase):
 
         """Clears the screen"""
         chip = Chip8CPU()
-        chip.gfx[10] = 1
-        chip.gfx[892] = 1
-        self.assertEqual(chip.gfx[10], 1)
-        self.assertEqual(chip.gfx[892], 1)
-        self.assertTrue(chip.gfx != ([0] * (64 * 32)))
+        chip.screen[10] = 1
+        chip.screen[892] = 1
+        self.assertEqual(chip.screen[10], 1)
+        self.assertEqual(chip.screen[892], 1)
+        self.assertTrue(chip.screen != ([0] * (64 * 32)))
         op00E0(chip, 0x00E0)
-        self.assertEqual(chip.gfx[10], 0)
-        self.assertEqual(chip.gfx[892], 0)
-        self.assertEqual(chip.gfx, ([0] * (64 * 32)))
+        self.assertEqual(chip.screen[10], 0)
+        self.assertEqual(chip.screen[892], 0)
+        self.assertEqual(chip.screen, ([0] * (64 * 32)))
 
     def test_op00EE(self):
         """Returns from a subroutine"""
@@ -406,7 +406,7 @@ class TestOpCodes(unittest.TestCase):
         """Skips next instruction if the key
         with value VX is pressed"""
         chip = Chip8CPU()
-        chip.key[0xA] = 1
+        chip.keyboard.keys[0xA] = 1
         chip.v_registers[0xA] = 0xA
 
         opEX9E(chip, 0xEB9E)
@@ -419,7 +419,7 @@ class TestOpCodes(unittest.TestCase):
         """Skips next instruction if the key
         with value VX is not pressed"""
         chip = Chip8CPU()
-        chip.key[0xA] = 1
+        chip.keyboard.keys[0xA] = 1
         chip.v_registers[0xA] = 0xA
         opEXA1(chip, 0xEAA1)
         self.assertEqual(chip.pc, 0x200)
