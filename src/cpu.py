@@ -70,10 +70,7 @@ class Chip8CPU:
             self.memory[i] = b
             i += 1
 
-    def execute(instruction):
-        operation = decode(hex(instruction))
-        operation(self, instruction)
-
+    @profile
     def emulate_cycle(self):
         # Fetch
         try:
@@ -84,10 +81,13 @@ class Chip8CPU:
 
         # Decode
         opcode = decode(instruction)
-        if opcode:
+        if opcode == opDXYN:
+            self.draw_flag = 1
+        else:
+            self.draw_flag = 0
             # print("\nEmulation Cycle! PC: " + str(self.pc) + ", Opcode: " + opcode.__name__)
             # Execute
-            opcode(self, instruction)
+        opcode(self, instruction)
 
         # Update Timers
         if self.delay_timer > 0:

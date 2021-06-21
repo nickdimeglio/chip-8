@@ -103,11 +103,9 @@ def nibble4(instruction):
 
 # Code for executing opcodes
 
-
 def op00E0(chip8, instruction):
     """Clear the screen"""
     chip8.screen = [0] * (64 * 32)
-
 
 def op00EE(chip8, instruction):
     """Returns from a subroutine"""
@@ -116,19 +114,16 @@ def op00EE(chip8, instruction):
     chip8.pc = chip8.stack[chip8.sp]
     chip8.stack[chip8.sp] = 0
 
-
 def op1NNN(chip8, instruction):
     """Jumps to address NNN"""
     # May need to change this to jump to NNN - 0x2 bc pc += 2 after
     chip8.pc = instruction & 0x0FFF
-
 
 def op2NNN(chip8, instruction):
     """Calls subroutine at NNN"""
     chip8.stack[chip8.sp] = chip8.pc
     chip8.sp += 1
     chip8.pc = instruction & 0x0FFF
-
 
 def op3XNN(chip8, instruction):
     """Skips the next instruction if VX == NN"""
@@ -138,7 +133,6 @@ def op3XNN(chip8, instruction):
     if VX == NN:
         chip8.pc += 2
 
-
 def op4XNN(chip8, instruction):
     """Skips the next instruction if VX != NN"""
     X = nibble2(instruction)
@@ -146,7 +140,6 @@ def op4XNN(chip8, instruction):
     NN = instruction & 0x00FF
     if VX != NN:
         chip8.pc += 2
-
 
 def op5XY0(chip8, instruction):
     """Skips the next instruction if VX == VY"""
@@ -156,7 +149,6 @@ def op5XY0(chip8, instruction):
     VY = chip8.v_registers[Y]
     if VX == VY:
         chip8.pc +=2
-
 
 def op6XNN(chip8, instruction):
     """Sets VX = NN"""
@@ -270,7 +262,6 @@ def opBNNN(chip8, instruction):
 def opCXNN(chip8, instruction):
     """Sets VX = NN & a random number"""
     rando = random.randint(0, 255)
-    print(rando)
     NN = 0xFF & instruction
     X = nibble2(instruction)
     chip8.v_registers[X] = NN & rando
@@ -342,6 +333,7 @@ def opFX0A(chip8, instruction):
     key_pressed = False
     while not key_pressed:
         for key in chip8.keyboard.keys:
+
             if key:
                 key_pressed = True
 

@@ -8,6 +8,7 @@ class Emulator:
         self.graphics = Chip8Graphics()
         self.chip.load_game(rom)
         
+    @profile
     def run(self):
         pygame.init()
         self.screen = pygame.display.set_mode(
@@ -23,10 +24,10 @@ class Emulator:
                     self.chip.keyboard.handle_key(event)
 
             self.chip.emulate_cycle()
-            self.graphics.draw_screen(self.screen, self.chip.screen)
-
-            pygame.display.update()
-            print(self.chip.keyboard.keys)
+            
+            if self.chip.draw_flag == 1:
+                self.graphics.draw_screen(self.screen, self.chip.screen)
+                pygame.display.update()
 
 
 if __name__ == '__main__':  
