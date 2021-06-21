@@ -285,10 +285,6 @@ def opDXYN(chip8, instruction):
     N = nibble4(instruction)
     i = chip8.address
 
-    """TEsting"""
-    print("DRAWING!" + "VX: " + str(VX) + ", VY: " + str(VY) + ", N: " + str(N) + ", i: " + str(i))
-    """Testing"""
-
     # Starting at i, store N bytes from memory as a binary string
     sprite = 0b0
     for byte in chip8.memory[i:i+N]:
