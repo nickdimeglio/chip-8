@@ -1,11 +1,10 @@
-"""Tests for the chip8 implementation"""
+"""Tests for chip8"""
 import unittest
 from cpu import *
 from opcodes import *
 
 
 class TestChip8(unittest.TestCase):
-
     def test_instantiation(self):
         chip = Chip8CPU()
         self.assertTrue(isinstance(chip, Chip8CPU))
@@ -374,10 +373,6 @@ class TestOpCodes(unittest.TestCase):
         opBNNN(chip, 0xB200)
 
         self.assertEqual(chip.pc, 0x5FE)
-
-    def test_opCXNN(self):
-        """Tested manually"""
-        True
 
     def test_opDXYN(self):
         """Draws a sprite on the screen"""

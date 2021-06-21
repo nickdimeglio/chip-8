@@ -99,19 +99,3 @@ class Chip8CPU:
 
         return True
 
-    # Functions for Testing
-    def printscreen(self):
-        print("\n")
-        row = 0
-        print(" " + "-" * 64)
-        while row <= 31:
-            c_row = self.screen[(row*64):(row*64+64)]
-            p_row = ""
-            for b in c_row:
-                if b == 1:
-                    p_row+="X"
-                else:
-                    p_row+=" "
-            print("|" + p_row + "|")
-            row+=1
-        print(" " + "-" * 64)

@@ -23,12 +23,9 @@ class Emulator:
                 elif event.type == pygame.KEYDOWN or event.type == pygame.KEYUP:
                     self.chip.keyboard.handle_key(event)
 
-
             self.chip.emulate_cycle()
-            print(type(self.chip.v_registers[2]))
-            # self.graphics.random_screen(self.screen)
-
             self.graphics.draw_screen(self.screen, self.chip.screen)
+
             pygame.display.update()
 
 

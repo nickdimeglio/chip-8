@@ -13,7 +13,7 @@ class Chip8Graphics:
         self.display_pixels = []
 
     def init_screen(self, screen, chip8_screen):
-        """Initializes the graphical representation of the CHIP8 screen"""
+        """Initializes the graphics for the CHIP8 screen"""
         for index, pixel in enumerate(chip8_screen):
             column = index%64
             row = index//64
