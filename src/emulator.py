@@ -15,7 +15,6 @@ class Emulator:
         self.graphics.init_screen(self.screen, self.chip.screen)
 
         while True: 
-            time.sleep(1/60)
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT: 
@@ -27,6 +26,7 @@ class Emulator:
             self.graphics.draw_screen(self.screen, self.chip.screen)
 
             pygame.display.update()
+            print(self.chip.keyboard.keys)
 
 
 if __name__ == '__main__':  

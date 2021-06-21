@@ -21,12 +21,12 @@ class Chip8Keyboard:
 
     def handle_key(self, event):
         if event.type == pygame.KEYDOWN:
-            key = pygame.key.name(event.key)
+            key = pygame.key.name(event.key).upper()
             chip8_key = self._map_key(key)
             if chip8_key:
                 self.keys[chip8_key] = 1
         elif event.type == pygame.KEYUP:
-            key = pygame.key.name(event.key)
+            key = pygame.key.name(event.key).upper()
             chip8_key = self._map_key(key)
             if chip8_key:
                 self.keys[chip8_key] = 0
@@ -83,10 +83,9 @@ class Chip8CPU:
             return False
 
         # Decode
-        print(hex(instruction))
         opcode = decode(instruction)
         if opcode:
-            print("\nEmulation Cycle! PC: " + str(self.pc) + ", Opcode: " + opcode.__name__)
+            # print("\nEmulation Cycle! PC: " + str(self.pc) + ", Opcode: " + opcode.__name__)
             # Execute
             opcode(self, instruction)
 
