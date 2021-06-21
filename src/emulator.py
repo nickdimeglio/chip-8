@@ -8,7 +8,6 @@ class Emulator:
         self.graphics = Chip8Graphics()
         self.chip.load_game(rom)
         
-    @profile
     def run(self):
         pygame.init()
         self.screen = pygame.display.set_mode(
@@ -16,7 +15,6 @@ class Emulator:
         self.graphics.init_screen(self.screen, self.chip.screen)
 
         while True: 
-
             for event in pygame.event.get():
                 if event.type == pygame.QUIT: 
                     sys.exit()

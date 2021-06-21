@@ -70,7 +70,6 @@ class Chip8CPU:
             self.memory[i] = b
             i += 1
 
-    @profile
     def emulate_cycle(self):
         # Fetch
         try:
