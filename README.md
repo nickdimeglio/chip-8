@@ -8,14 +8,7 @@ Here's a CHIP-8 snippet from CHIP-8.com:
                     0x00E0             // Clear the Screen.
                     0x6A00             // Set the X co-ordinate to 00H.
                     0x6B00             // Set the Y co-ordinate to 00H.
-                    0x2400             // Draw SPRITE A.
+                    0x2400             // Draw SPRITE.
                     0x2500             // Keep on the Screen for a moment.
                     0x2400             // Erase the Sprite. (XOR with the previously drawn Sprite).
-                    0x2500             // Call delay.
-                    0x7A01             // Increment X to the next Screen position.
-                    0x2600             // Draw SPRITE B.
-                    0x2500             // Keep on the Screen for a moment.
-                    0x2600             // Erase the Sprite.
-                    0x2500             // Call delay.
-                    0x7A01             // Increment X.
-                    0x1206             // Keep animating the Sprite.  
+  
