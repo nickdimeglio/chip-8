@@ -3,7 +3,7 @@ CHIP-8 is an interpreted programming language developed by Joseph Weisbecker in 
 
 The CHIP-8 interpreter is essentially a virtual machine with 4K memory consisting of main memory, 16 registers, a stack, two timers, input/output with graphics and sound, and a font set. Programs are written for CHIP-8 using a set of 35 hexadecimal opcodes. The op codes manipulate the memory and registers to let users play their favorite games. 
 
-Here's a CHIP-8 snippet from CHIP-8.com:
+Here's a CHIP-8 code snippet from CHIP-8.com:
 
                     0x00E0             // Clear the Screen.
                     0x6A00             // Set the X co-ordinate to 00H.
