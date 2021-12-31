@@ -23,4 +23,4 @@ Here's a code snippet from CHIP-8.com:
 
 ![Test ROM Gif](https://media.giphy.com/media/KqSmW2BimasSZ8wxt8/giphy.gif)
 
-If all Opcodes in the test suite return 'OK', you are good to go. I have included PONG and Kaleidoscope (by Weisbecker) in the repo, but there is a world of CHIP-8 ROMs out there ([this repository](https://github.com/kripod/chip8-roms) has quite a few). 
+If all opcodes in the test suite return 'OK', you are good to go. I have included PONG and Kaleidoscope (by Weisbecker) in the repo, but there is a world of CHIP-8 ROMs out there ([this repository](https://github.com/kripod/chip8-roms) has quite a few). 
