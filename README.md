@@ -16,3 +16,6 @@ Here's a code snippet from CHIP-8.com:
                     0x2500             // Keep on the Screen for a moment.
                     0x2400             // Erase the Sprite. (XOR with the previously drawn Sprite).
 ```  
+
+
+**Important:** If you would like to run my emulator on your own machine, please run the ROM 'test_opcode.ch8'. If all Opcodes in the test suite return 'OK', you are good to go. I have included PONG and Kaleidoscope (by Weisbecker) in the repo, but there is a world of CHIP-8 ROMs out there ([this repository](https://github.com/kripod/chip8-roms) has quite a few). 
