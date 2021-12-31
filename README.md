@@ -1,7 +1,7 @@
 
 # CHIP-8 Programming Language Interpreter/Emulator
 
-![Pong Demo Gif](https://giphy.com/gifs/WrRiawIuXeF4uVYxUR
+![Pong Demo Gif](https://media.giphy.com/media/WrRiawIuXeF4uVYxUR/giphy.gif)
 
 CHIP-8 is an interpreted programming language developed by Joseph Weisbecker in the late 1970s. Weisbecker designed CHIP-8 to allow video games to be programmed once and then run on an assortment of 8-bit microcomputers. As such, the CHIP-8 interpreter takes the form of a console emulator, even though an actual CHIP-8 console never existed. 
  
