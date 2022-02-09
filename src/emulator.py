@@ -14,6 +14,9 @@ class Emulator:
             (self.graphics.width, self.graphics.height))
         self.graphics.init_screen(self.screen, self.chip.screen)
 
+        # Initialize emulator clock
+        clock = pygame.time.Clock()
+
         while True: 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT: 
@@ -26,6 +29,8 @@ class Emulator:
             if self.chip.draw_flag == 1:
                 self.graphics.draw_screen(self.screen, self.chip.screen)
                 pygame.display.update()
+
+            clock.tick(60)
 
 
 if __name__ == '__main__':  
