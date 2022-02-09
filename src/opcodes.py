@@ -297,6 +297,7 @@ def opDXYN(chip8, instruction):
     canvas = 0b0
 
     for address in draw_area:
+        address %= len(chip8.screen)
         canvas <<= 1
         canvas |= chip8.screen[address]
 
@@ -308,6 +309,7 @@ def opDXYN(chip8, instruction):
     chip8.v_registers[0xF] = 0
 
     for address in reversed(draw_area):
+        address %= len(chip8.screen)
         if chip8.screen[address] == 1 and (drawing & 0b1) == 0:
             chip8.v_registers[0xF] = 1
         chip8.screen[address] = drawing & 0b1
