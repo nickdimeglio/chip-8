@@ -2,6 +2,7 @@
 # CHIP-8 Programming Language Interpreter/Emulator
 
 ![Pong Demo Gif](https://media.giphy.com/media/WrRiawIuXeF4uVYxUR/giphy.gif)
+![Test ROM Gif](https://media.giphy.com/media/KqSmW2BimasSZ8wxt8/giphy.gif)
 
 CHIP-8 is an interpreted programming language developed by Joseph Weisbecker in the late 1970s. Weisbecker designed CHIP-8 to allow video games to be programmed once and then run on any computer. As such, the CHIP-8 interpreter takes the form of a console emulator, even though an actual CHIP-8 console never existed. 
  
@@ -19,8 +20,4 @@ Here's a code snippet from CHIP-8.com:
 
 
 
-**Important:** If you would like to run my emulator on your own machine, please run the ROM 'test_opcode.ch8' first:
-
-![Test ROM Gif](https://media.giphy.com/media/KqSmW2BimasSZ8wxt8/giphy.gif)
-
-If all opcodes in the test suite return 'OK', you are good to go. I have included PONG and Kaleidoscope (by Weisbecker) in the repo, but there is a world of CHIP-8 ROMs out there ([this repository](https://github.com/kripod/chip8-roms) has quite a few). 
+**Important:** If you would like to run my emulator on your own machine, please run the ROM 'test_opcode.ch8' first. If all opcodes in the test suite return 'OK', you are good to go. I have included PONG and Kaleidoscope (by Weisbecker) in the repo, but there is a world of CHIP-8 ROMs out there ([this repository](https://github.com/kripod/chip8-roms) has quite a few). 
