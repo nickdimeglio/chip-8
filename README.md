@@ -19,5 +19,8 @@ Here's a code snippet from CHIP-8.com:
 ```  
 
 
+**Important:** If you would like to run my emulator on your own machine, please run the ROM 'test_opcode.ch8' first:
 
-**Important:** If you would like to run my emulator on your own machine, please run the ROM 'test_opcode.ch8' first. If all opcodes in the test suite return 'OK', you are good to go. I have included PONG and Kaleidoscope (by Weisbecker) in the repo, but there is a world of CHIP-8 ROMs out there ([this repository](https://github.com/kripod/chip8-roms) has quite a few). 
+![Test ROM Gif](https://media.giphy.com/media/KqSmW2BimasSZ8wxt8/giphy.gif)
+
+If all opcodes in the test suite return 'OK', you are good to go. I have included PONG and Kaleidoscope (by Weisbecker) in the repo, but there is a world of CHIP-8 ROMs out there ([this repository](https://github.com/kripod/chip8-roms) has quite a few). 
